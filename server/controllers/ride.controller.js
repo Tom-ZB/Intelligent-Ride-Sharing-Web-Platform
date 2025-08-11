@@ -7,11 +7,11 @@ exports.createRide = async (req, res) => {
         const userId = req.user.id; // 从 JWT 中获取用户 ID
         const { type, location, destination, availableSeats, departure_time } = req.body;
 
-        const postId = await rideDAO.createRide(userId, type, location, destination, availableSeats, departure_time);
+        const postId = await rideDAO.createRide(userId, type, location, destination,departure_time, availableSeats);
         res.json({ message: "Post created successfully", postId });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Failed to create post" });
+        res.status(500).json({ error: "Failed to create ride" });
     }
 };
 
@@ -32,14 +32,15 @@ exports.updateRide = async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.id;
-        const { title, description, location, destination, availableSeats, tags } = req.body;
+        const { type,location, destination, availableSeats, departureTime,status} = req.body;
+        //console.log( type,location, destination, availableSeats, departureTime,status)
 
         // 检查是否为该用户发布的帖子
         const ride = await rideDAO.getRideById(id);
         if (!ride) return res.status(404).json({ error: "Post not found" });
         if (ride.user_id !== userId) return res.status(403).json({ error: "Unauthorized" });
 
-        await rideDAO.updateRide(id, title, description, location, destination, availableSeats, tags);
+        await rideDAO.updateRide(id,type,location, destination, availableSeats,departureTime,status);
         res.json({ message: "Post updated successfully" });
     } catch (err) {
         console.error(err);
@@ -54,9 +55,9 @@ exports.deleteRide = async (req, res) => {
         const userId = req.user.id;
 
         // 检查是否为该用户发布的帖子
-        const post = await postDAO.getRideById(id);
-        if (!post) return res.status(404).json({ error: "Post not found" });
-        if (post.user_id !== userId) return res.status(403).json({ error: "Unauthorized" });
+        const ride = await rideDAO.getRideById(id);
+        if (!ride) return res.status(404).json({ error: "Post not found" });
+        if (ride.user_id !== userId) return res.status(403).json({ error: "Unauthorized" });
 
         await rideDAO.deleteRide(id);
         res.json({ message: "Post deleted successfully" });

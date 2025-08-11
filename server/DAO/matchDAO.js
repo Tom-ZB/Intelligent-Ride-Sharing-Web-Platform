@@ -13,9 +13,9 @@ exports.createMatch = async (ride_offer_id, ride_request_id) => {
 // 3.2 获取匹配信息（根据匹配 ID 获取一条匹配记录）
 exports.getMatchById = async (id) => {
     const rows = await db.query(
-        `SELECT rm.*, ro.user_id AS driver_id
+        `SELECT rm.*, ri.user_id AS driver_id
          FROM ride_match rm
-                  JOIN ride_info ro ON rm.ride_offer_id = ro.id
+                  JOIN ride_info ri ON rm.ride_offer_id = ri.id
          WHERE rm.id = ?`,
         [id]
     );

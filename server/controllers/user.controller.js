@@ -2,16 +2,36 @@ const userDAO = require('../dao/userDAO');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// 注册用户
+// 注册用户  需要使用form-data传参 因为需要传入图片/文件  需要使用Multer进行解析
 exports.register = async (req, res) => {
     try {
         const { username, email, password, status } = req.body;
         const avatar = req.file ? `/image/${req.file.filename}` : null;
 
-        const hashedPassword = await bcrypt.hash(password, 10);  //生成不可逆的哈希
+        // console.log('req.headers:', req.headers['content-type']);
+        // console.log('req.body:', req.body);
+        // console.log('password:', password);
+        // console.log(avatar)
 
-        const role = 'user'; // 强制设置为普通用户
-        const userId = await userDAO.createUser(username, email, hashedPassword, status || 'active', avatar, role);
+        // 1. 检查邮箱是否已经存在
+        const existingUser = await userDAO.getUserByEmail(email);
+        if (existingUser) {
+            return res.status(400).json({ error: "Email already registered" });
+        }
+
+        // 2. 加密密码
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // 3. 插入新用户
+        const role = 'user';
+        const userId = await userDAO.createUser(
+            username,
+            email,
+            hashedPassword,
+            status || 'active',
+            avatar,
+            role
+        );
 
         res.json({ message: "User registered successfully", userId, avatar });
     } catch (err) {
@@ -21,7 +41,8 @@ exports.register = async (req, res) => {
 };
 
 
-// 登录用户
+
+// 登录用户  需要使用row的JSON格式传入参数
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -52,6 +73,8 @@ exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { username, email, password, status } = req.body;
+        const avatar = req.file ? `/image/${req.file.filename}` : null;
+
 
         // 权限检查：只能本人或管理员修改
         if (req.user.id !== parseInt(id)) {
@@ -61,7 +84,7 @@ exports.updateUser = async (req, res) => {
         let hashedPassword = null;
         if (password) hashedPassword = await bcrypt.hash(password, 10);
 
-        const updatedUser = await userDAO.updateUser(id, username, email, hashedPassword, status);
+        const updatedUser = await userDAO.updateUser(id, username, email, hashedPassword, status,avatar);
         res.json({ message: "User information updated successfully", user: updatedUser });
     } catch (err) {
         console.error(err);
@@ -74,6 +97,7 @@ exports.updateUser = async (req, res) => {
 exports.deactivateUser = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(id)
 
         // 权限检查：只能本人或管理员注销
         if (req.user.id !== parseInt(id)) {

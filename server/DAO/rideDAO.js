@@ -1,13 +1,13 @@
 const db = require('../models/db');
 
 // 创建行程
-exports.createRide = async (userId, type, fromLocation, toLocation, departureTime, seatsAvailable, status = 'active') => {
+exports.createRide = async (userId, type, location, destination, departure_time,availableSeats, status = 'active') => {
     const sql = `
         INSERT INTO ride_info (user_id, type, from_location, to_location, departure_time, seats_available, status, created_time)
         VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
     `;
     const result = await db.query(sql, [
-        userId, type, fromLocation, toLocation, departureTime, seatsAvailable, status
+        userId, type, location, destination, departure_time, availableSeats, status
     ]);
     return result.insertId;
 };
@@ -56,14 +56,14 @@ exports.getRideById = async (id) => {
 };
 
 // 更新行程
-exports.updateRide = async (id, type, fromLocation, toLocation, departureTime, seatsAvailable, status) => {
+exports.updateRide = async (id,type,location, destination, availableSeats, departureTime, status) => {
     const sql = `
         UPDATE ride_info
         SET type=?, from_location=?, to_location=?, departure_time=?, seats_available=?, status=?
         WHERE id=?
     `;
     await db.query(sql, [
-        type, fromLocation, toLocation, departureTime, seatsAvailable, status, id
+        type,location,destination,departureTime,availableSeats, status ,id
     ]);
 };
 

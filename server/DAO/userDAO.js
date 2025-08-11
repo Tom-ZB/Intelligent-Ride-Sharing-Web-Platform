@@ -3,7 +3,7 @@ const db = require('../models/db'); // MySQL 连接池
 // 创建用户
 exports.createUser = async (username, email, hashedPassword, status, avatar, role) => {
     const result = await db.query(
-        `INSERT INTO users (username, email, password, status, avatar, role) VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO user (username, email, password, status, avatar, role) VALUES (?, ?, ?, ?, ?, ?)`,
         [username, email, hashedPassword, status, avatar, role]
     );
     return result.insertId;
@@ -22,7 +22,7 @@ exports.getUserByEmail = async (email) => {
 };
 
 // 更新用户信息
-exports.updateUser = async (id, username, email, password, status) => {
+exports.updateUser = async (id, username, email, password, status,avatar) => {
     const updates = [];
     const values = [];
 
@@ -30,6 +30,7 @@ exports.updateUser = async (id, username, email, password, status) => {
     if (email) { updates.push("email = ?"); values.push(email); }
     if (password) { updates.push("password = ?"); values.push(password); }
     if (status) { updates.push("status = ?"); values.push(status); }
+    if (avatar) { updates.push("avatar = ?"); values.push(avatar); }
 
     // 如果没有更新字段，直接返回当前用户信息
     if (updates.length === 0) {
