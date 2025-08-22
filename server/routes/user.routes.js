@@ -11,6 +11,10 @@ router.post('/auth/register', upload.single("avatar"), userController.register);
 // 登录用户 ok
 router.post('/auth/login', userController.login);
 
+// 获取用户信息，需要登录
+router.get('/users/me', authenticateToken, userController.getUserInfo);
+
+
 // 修改用户信息（需要登录） ok
 router.put('/users/:id',authenticateToken, userController.updateUser);
 

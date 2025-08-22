@@ -21,6 +21,22 @@ exports.getUserByEmail = async (email) => {
     return rows[0];
 };
 
+// 根据用户 ID 获取完整信息
+exports.getUserById = async (id) => {
+    const sql = `
+        SELECT id,username,email,created_time,status,avatar,role
+        FROM user
+        WHERE id = ?
+    `;
+
+    // 使用通用 query 方法执行 SQL
+    const rows = await db.query(sql, [id]);
+
+    // 返回第一条匹配的用户记录
+    return rows[0];
+};
+
+
 // 更新用户信息
 exports.updateUser = async (id, username, email, password, status,avatar) => {
     const updates = [];

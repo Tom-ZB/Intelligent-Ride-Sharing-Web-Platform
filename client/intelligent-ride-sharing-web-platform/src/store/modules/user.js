@@ -32,7 +32,7 @@ const userStore = createSlice({
 })
 
 //解构出actionCreator
-const { setToken,setUserInfo,clearUserInfo} = userStore.actions
+export const { setToken,setUserInfo,clearUserInfo} = userStore.actions
 
 //获取reducer函数
 const userReducer = userStore.reducer
@@ -42,20 +42,36 @@ const fetchLogin = (loginForm) => {
     return async (dispatch) => {
         //1发送异步请求
         const res = await loginAPI(loginForm)
+        console.log("fetchUserInfo res.data:", res.data);
+
         //2提交同步action进行token存入
         dispatch(setToken(res.token));
         dispatch(setUserInfo(res.user));
     }
 }
+
 //异步方法 获取个人用户信息
 const fetchUserInfo = () => {
     return async (dispatch) => {
         //1发送异步请求
-        const res = await getProfileAPI()
+        const res = await getProfileAPI();
         //2提交同步action进行token存入
-        dispatch(setUserInfo(res.data))
+        dispatch(setUserInfo(res))
     }
 }
 
-export {fetchLogin,setToken,fetchUserInfo,clearUserInfo}
+// const fetchUserInfo = () => {
+//     return async (dispatch) => {
+//         try {
+//             const res = await getProfileAPI();
+//             console.log("fetchUserInfo res.data:", res);
+//             dispatch(setUserInfo(res));
+//         } catch (err) {
+//             console.error("fetchUserInfo error:", err);
+//         }
+//     }
+// }
+
+
+export {fetchLogin,fetchUserInfo}
 export default userReducer

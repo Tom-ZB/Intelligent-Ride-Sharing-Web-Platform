@@ -68,6 +68,26 @@ exports.login = async (req, res) => {
     }
 };
 
+// 获取用户信息
+exports.getUserInfo = async (req, res) => {
+    try {
+        const userId = req.user.id;  //从token解析出用户的ID
+
+        const user = await userDAO.getUserById(userId);
+        console.log(user)
+
+        if (!user) {
+            return res.status(404).json({ message: "用户不存在" });
+        }
+
+        // 返回完整用户信息
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "获取用户信息失败" });
+    }
+};
+
 // 修改用户信息
 exports.updateUser = async (req, res) => {
     try {
