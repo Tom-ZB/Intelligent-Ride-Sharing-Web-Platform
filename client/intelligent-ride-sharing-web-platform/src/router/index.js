@@ -15,7 +15,7 @@ import Settings from "../pages/user/setting";
 // Rides (原来的 posts)
 import RideList from "../pages/rides/index";
 import RideCreate from "../pages/rides/create";
-import RideDetail from "../pages/rides/[id]";
+import RideDetail from "../pages/rides/myRideList";
 
 // Matches
 import MatchList from "../pages/matches/index";
@@ -48,6 +48,47 @@ const router = createBrowserRouter([
                 <Home />
             </AuthRoute>
         ),
+        children: [
+            // 首页默认渲染 map + AI 页面
+            {
+                index: true,
+                element: (
+                    <>
+                        <MapPage />
+                        <AIAnswer />
+                    </>
+                ),
+            },
+            // 其它导航跳转页面作为 Home 的子路由
+            {
+                path: "rides",
+                element: <RideList />,
+            },
+            {
+                path: "rides/create",
+                element: <RideCreate />,
+            },
+            {
+                path: "rides/:id",
+                element: <RideDetail />,
+            },
+            {
+                path: "chat",
+                element: <ChatList />,
+            },
+            {
+                path: "chat/:chatId",
+                element: <ChatChannel />,
+            },
+            {
+                path: "map",
+                element: <MapPage />,
+            },
+            {
+                path: "ai",
+                element: <AIAnswer />,
+            },
+        ],
     },
     {
         path: "/auth/login",
@@ -74,30 +115,6 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/rides",
-        element: (
-            <AuthRoute>
-                <RideList />
-            </AuthRoute>
-        ),
-    },
-    {
-        path: "/rides/create",
-        element: (
-            <AuthRoute>
-                <RideCreate />
-            </AuthRoute>
-        ),
-    },
-    {
-        path: "/rides/:id",
-        element: (
-            <AuthRoute>
-                <RideDetail />
-            </AuthRoute>
-        ),
-    },
-    {
         path: "/matches",
         element: (
             <AuthRoute>
@@ -110,38 +127,6 @@ const router = createBrowserRouter([
         element: (
             <AuthRoute>
                 <MatchDetail />
-            </AuthRoute>
-        ),
-    },
-    {
-        path: "/chat",
-        element: (
-            <AuthRoute>
-                <ChatList />
-            </AuthRoute>
-        ),
-    },
-    {
-        path: "/chat/:chatId",
-        element: (
-            <AuthRoute>
-                <ChatChannel />
-            </AuthRoute>
-        ),
-    },
-    {
-        path: "/ai/answer",
-        element: (
-            <AuthRoute>
-                <AIAnswer />
-            </AuthRoute>
-        ),
-    },
-    {
-        path: "/map",
-        element: (
-            <AuthRoute>
-                <MapPage />
             </AuthRoute>
         ),
     },

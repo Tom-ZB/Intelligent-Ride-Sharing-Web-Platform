@@ -37,7 +37,7 @@ const matchRoutes = require("./server/routes/match.routes");
 app.use("/", userRoutes);
 app.use("/", rideRoutes);
 app.use("/", adminRoutes);
-app.use("/", aiRoutes);
+//app.use("/", aiRoutes);
 app.use("/", chatRoutes);
 app.use("/", matchRoutes);
 

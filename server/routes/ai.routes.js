@@ -5,6 +5,6 @@ const authenticateToken = require('../middleware/auth'); // JWT认证
 
 
 // 获取AI行程建议
-router.post('/ai/suggestions', authenticateToken, aiController.getAISuggestions);
+//router.post('/ai/suggestions', authenticateToken, aiController.getAISuggestions);
 
-module.exports = router;
+//module.exports = router;

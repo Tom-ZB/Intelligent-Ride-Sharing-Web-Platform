@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 //3.请求拦截器/响应拦截器
 
 const request = axios.create({
-    baseURL: '',
+    baseURL: 'http://localhost:3000',
     timeout: 5000
 })
 
