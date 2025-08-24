@@ -47,19 +47,20 @@ const Setting = () => {
         if (user.password) formData.append("password", user.password);
         if (user.avatar) formData.append("avatar", user.avatar);
 
+
         try {
             const updatedUser = await updateUserAPI(reduxUser.id, formData);
             dispatch(setUserInfo(updatedUser));
-            setMessage("保存成功！");
+            setMessage("save successfully！");
         } catch (err) {
-            setMessage("保存失败：" + (err.message || ""));
+            setMessage("save failed：" + (err.message || ""));
         } finally {
             setLoading(false);
         }
     };
 
     const handleDeactivate = async () => {
-        if (!window.confirm("确定要注销账户吗？此操作不可恢复！")) return;
+        if (!window.confirm("Are you sure to disable your account?")) return;
 
         setLoading(true);
         setMessage("");
@@ -67,12 +68,12 @@ const Setting = () => {
         try {
             await deactivateUserAPI(reduxUser.id);
             dispatch(clearUserInfo());
-            setMessage("账户已注销，正在跳转登录页...");
+            setMessage("Your account has been disabled，jump into login page...");
             setTimeout(() => {
                 navigate("/login", { replace: true });
             }, 1500);
         } catch (err) {
-            setMessage("注销失败：" + (err.message || ""));
+            setMessage("disable failed：" + (err.message || ""));
         } finally {
             setLoading(false);
         }
@@ -80,10 +81,10 @@ const Setting = () => {
 
     return (
         <div className="setting-page">
-            <h2>账户设置</h2>
+            <h2>Account Setting</h2>
 
             <div className="form-group">
-                <label>用户名</label>
+                <label>Username</label>
                 <input
                     type="text"
                     name="username"
@@ -103,18 +104,18 @@ const Setting = () => {
             </div>
 
             <div className="form-group">
-                <label>密码</label>
+                <label>Password</label>
                 <input
                     type="password"
                     name="password"
                     value={user.password}
                     onChange={handleChange}
-                    placeholder="留空则不修改"
+                    placeholder="keep it if no input here"
                 />
             </div>
 
             <div className="form-group">
-                <label>头像</label>
+                <label>Avatar</label>
                 <input type="file" accept="image/*" onChange={handleAvatarChange} />
                 {avatarPreview && (
                     <img
@@ -126,11 +127,11 @@ const Setting = () => {
             </div>
 
             <button className="save-btn" onClick={handleSave} disabled={loading}>
-                {loading ? "保存中..." : "保存"}
+                {loading ? "Saving..." : "save"}
             </button>
 
             <button className="deactivate-btn" onClick={handleDeactivate} disabled={loading}>
-                注销账户
+                Disable Account
             </button>
 
             {message && <p className="message">{message}</p>}
