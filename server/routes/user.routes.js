@@ -16,7 +16,7 @@ router.get('/users/me', authenticateToken, userController.getUserInfo);
 
 
 // 修改用户信息（需要登录） ok
-router.put('/users/:id',authenticateToken, userController.updateUser);
+router.put('/users/:id',authenticateToken, upload.single("avatar"),userController.updateUser);
 
 // 注销用户（状态改为 inactive，需要登录） ok
 router.patch('/users/:id/deactivate', authenticateToken, userController.deactivateUser);
