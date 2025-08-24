@@ -10,6 +10,9 @@ router.post('/rides', authenticateToken, rideController.createRide);
 // 获取所有帖子（可带查询参数）
 router.get('/rides', rideController.getAllRides);
 
+// 根据 ID 获取行程
+router.get('/rides/:id', rideController.getRideById);
+
 // 编辑帖子  ok
 router.put('/rides/:id', authenticateToken, rideController.updateRide);
 
