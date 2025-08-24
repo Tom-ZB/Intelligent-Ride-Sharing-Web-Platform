@@ -27,6 +27,21 @@ exports.getAllRides = async (req, res) => {
     }
 };
 
+// 根据 ID 获取行程
+exports.getRideById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const ride = await rideDAO.getRideById(id);
+        if (!ride) {
+            return res.status(404).json({ message: "Ride not found" });
+        }
+        res.json(ride);
+    } catch (err) {
+        console.error("Error fetching ride by ID:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 // 2.3 编辑帖子
 exports.updateRide = async (req, res) => {
     try {

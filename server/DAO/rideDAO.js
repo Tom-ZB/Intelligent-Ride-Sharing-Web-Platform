@@ -48,6 +48,7 @@ exports.getAllRides = async (search, status) => {
     }));
 };
 
+
 // 获取单个行程
 exports.getRideById = async (id) => {
     const sql = `SELECT * FROM ride_info WHERE id = ?`;
