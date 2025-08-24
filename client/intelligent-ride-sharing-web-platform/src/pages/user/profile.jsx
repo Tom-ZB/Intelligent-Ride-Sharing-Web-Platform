@@ -39,7 +39,7 @@ const Profile = () => {
                     <p><strong>role：</strong> {userInfo.role}</p>
                 </div>
             </div>
-            <button className="edit-btn" onClick={() => navigate("/setting")}>
+            <button className="edit-btn" onClick={() => navigate("/user/setting")}>
                 edit account info
             </button>
         </div>
