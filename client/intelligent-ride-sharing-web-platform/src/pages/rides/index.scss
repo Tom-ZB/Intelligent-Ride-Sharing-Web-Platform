@@ -1,0 +1,116 @@
+.ride-list-container {
+  padding: 30px 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: linear-gradient(145deg, #fdfbfb, #ebedee);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  h2 {
+    text-align: center;
+    font-size: 28px;
+    color: #222;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .ant-input-affix-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+
+    &:hover,
+    &:focus-within {
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      border-color: #4CAF50;
+    }
+  }
+
+  .ant-table {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    overflow: hidden;
+
+    .ant-table-thead > tr > th {
+      background: #f4f6f8;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+    }
+
+    .ant-table-tbody > tr > td {
+      text-align: center;
+      font-size: 15px;
+      color: #555;
+      transition: background 0.3s ease;
+    }
+
+    .ant-table-tbody > tr:hover {
+      background: #f0f9f8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    }
+
+    .ant-btn-primary {
+      background: linear-gradient(90deg, #4CAF50, #67c36f);
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(90deg, #45a049, #5bbf5b);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      }
+
+      &:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+    }
+  }
+
+  /* Modal 自定义 */
+  .ant-modal-content {
+    border-radius: 16px;
+    padding: 25px;
+    background: #ffffffcc;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+  }
+
+  .ant-select {
+    .ant-select-selector {
+      border-radius: 12px !important;
+      padding: 10px 15px !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+
+      &:hover,
+      &:focus {
+        box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        border-color: #4CAF50 !important;
+      }
+    }
+
+    .ant-select-item-option-content {
+      font-size: 15px;
+      color: #444;
+    }
+  }
+
+  .ant-modal-footer .ant-btn-primary {
+    background: linear-gradient(90deg, #4CAF50, #67c36f);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    &:hover {
+      background: linear-gradient(90deg, #45a049, #5bbf5b);
+    }
+  }
+}

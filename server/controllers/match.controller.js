@@ -50,3 +50,33 @@ exports.updateMatchStatus = async (req, res) => {
         res.status(500).json({ error: "Failed to update match status" });
     }
 };
+
+// 获取某个用户的所有匹配
+exports.getMatchesByUser = async (req, res) => {
+    try {
+        const userId = req.query.userId; // 前端传 ?userId=xxx
+        if (!userId) {
+            return res.status(400).json({ error: "userId is required" });
+        }
+        const matches = await matchDAO.findMatchesByUser(userId) || [];
+        res.json(matches);
+    } catch (err) {
+        console.error("Error getting matches by user:", err);
+        res.status(500).json({ error: "Failed to fetch matches" });
+    }
+};
+
+// 获取单个匹配详情
+exports.getMatchById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const match = await matchDAO.findMatchById(id);
+        if (!match) {
+            return res.status(404).json({ error: "Match not found" });
+        }
+        res.json(match);
+    } catch (err) {
+        console.error("Error getting match by id:", err);
+        res.status(500).json({ error: "Failed to fetch match" });
+    }
+};

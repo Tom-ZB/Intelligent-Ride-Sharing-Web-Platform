@@ -4,6 +4,9 @@ const rideDAO  = require('../DAO/rideDAO');
 // 2.1 创建帖子
 exports.createRide = async (req, res) => {
     try {
+        console.log("req.user:", req.user); // 打印 JWT 解析出的用户信息
+        console.log("req.body:", req.body); // 打印前端发送的请求体
+
         const userId = req.user.id; // 从 JWT 中获取用户 ID
         const { type, location, destination, availableSeats, departure_time } = req.body;
 
@@ -18,8 +21,8 @@ exports.createRide = async (req, res) => {
 // 2.2 获取所有帖子
 exports.getAllRides = async (req, res) => {
     try {
-        const { search, tag, role } = req.query;
-        const posts = await rideDAO.getAllRides(search, tag, role);
+        const { search, status } = req.query;
+        const posts = await rideDAO.getAllRides(search, status);
         res.json(posts);
     } catch (err) {
         console.error(err);
@@ -55,8 +58,15 @@ exports.updateRide = async (req, res) => {
         if (!ride) return res.status(404).json({ error: "Post not found" });
         if (ride.user_id !== userId) return res.status(403).json({ error: "Unauthorized" });
 
-        await rideDAO.updateRide(id,type,location, destination, availableSeats,departureTime,status);
-        res.json({ message: "Post updated successfully" });
+        // 自动状态处理
+        let newStatus = status;
+        if (availableSeats === 0) {
+            newStatus = "full";
+        }
+
+        await rideDAO.updateRide(id,type,location, destination, availableSeats,departureTime,newStatus);
+        const updatedRide = await rideDAO.getRideById(id);
+        res.json(updatedRide);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to update post" });

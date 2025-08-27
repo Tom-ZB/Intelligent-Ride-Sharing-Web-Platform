@@ -16,6 +16,7 @@ import Settings from "../pages/user/setting";
 import RideList from "../pages/rides/index";
 import RideCreate from "../pages/rides/create";
 import RideDetail from "../pages/rides/myRideList";
+import RideEdit from "../pages/rides/editRideInfo";
 
 // Matches
 import MatchList from "../pages/matches/index";
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
             {
                 path: "rides/:id",
                 element: <RideDetail />,
+            },
+            {
+                path: "/rides/edit/:id",
+                element: <RideEdit />,
             },
             {
                 path: "chat",

@@ -26,3 +26,44 @@ exports.getMatchById = async (id) => {
 exports.updateMatchStatus = async (id, status) => {
     await db.query(`UPDATE ride_match SET status = ? WHERE id = ?`, [status, id]);
 };
+
+// 获取某个用户的所有匹配
+exports.findMatchesByUser = async (userId) => {
+    const sql = `
+        SELECT m.*,
+               ro.id AS offer_id,
+               ro.user_id AS offer_user_id,
+               ro.from_location AS offer_from,
+               ro.to_location AS offer_to,
+               rr.id AS request_id,
+               rr.user_id AS request_user_id,
+               rr.from_location AS request_from,
+               rr.to_location AS request_to
+        FROM ride_match m
+                 LEFT JOIN ride_info ro ON m.ride_offer_id = ro.id AND ro.user_id = ?
+                 LEFT JOIN ride_info rr ON m.ride_request_id = rr.id AND rr.user_id = ?
+        WHERE ro.id IS NOT NULL OR rr.id IS NOT NULL
+        ORDER BY m.match_time DESC
+    `;
+    const [rows] = await db.query(sql, [userId, userId]);
+    console.log("matches rows222:", rows); // 确认这里有两条
+    return rows;
+};
+
+
+// 获取单个匹配详情
+exports.findMatchById = async (id) => {
+    const sql = `
+    SELECT m.*, 
+           ro.from_location AS offer_from,
+           ro.to_location AS offer_to,
+           rr.from_location AS request_from,
+           rr.to_location AS request_to
+    FROM ride_match m
+    LEFT JOIN ride_info ro ON m.ride_offer_id = ro.id
+    LEFT JOIN ride_info rr ON m.ride_request_id = rr.id
+    WHERE m.id = ?
+  `;
+    const [rows] = await db.query(sql, [id]);
+    return rows[0];
+};

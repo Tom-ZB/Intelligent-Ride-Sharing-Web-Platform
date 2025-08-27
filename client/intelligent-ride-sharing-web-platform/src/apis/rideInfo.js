@@ -23,9 +23,6 @@ export function createRideAPI(formData) {
         url: "/rides",
         method: "POST",
         data: formData,
-        headers: {
-            "Content-Type": "application/json"
-        }
     });
 }
 
@@ -35,9 +32,6 @@ export function updateRideAPI(id, formData) {
         url: `/rides/${id}`,
         method: "PUT",
         data: formData,
-        headers: {
-            "Content-Type": "application/json"
-        }
     });
 }
 

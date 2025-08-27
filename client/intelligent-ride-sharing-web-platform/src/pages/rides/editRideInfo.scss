@@ -1,0 +1,84 @@
+.ride-edit-container {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 35px 40px;
+  background: linear-gradient(135deg, #fdfbfb, #ebedee);
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  h2 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 30px;
+    color: #222;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .ant-form-item {
+    margin-bottom: 28px;
+
+    .ant-form-item-label > label {
+      font-weight: 600;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .ant-input,
+    .ant-input-number,
+    .ant-select-selector,
+    .ant-picker-input > input {
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+
+      &:hover,
+      &:focus {
+        box-shadow: 0 7px 20px rgba(0,0,0,0.12);
+        border-color: #4CAF50;
+      }
+    }
+  }
+
+  .ant-btn-primary {
+    background: linear-gradient(90deg, #4CAF50, #67c36f);
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 28px;
+    box-shadow: 0 7px 18px rgba(0,0,0,0.14);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(90deg, #45a049, #5bbf5b);
+      transform: translateY(-2px);
+      box-shadow: 0 9px 22px rgba(0,0,0,0.18);
+    }
+  }
+
+  .ant-btn {
+    &.ant-btn:not(.ant-btn-primary) {
+      border-radius: 12px;
+      padding: 12px 28px;
+      font-weight: 500;
+      margin-left: 12px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #f0f0f0;
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+// 页面加载时的居中 loading
+.ride-edit-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}

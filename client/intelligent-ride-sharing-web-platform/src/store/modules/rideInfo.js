@@ -35,7 +35,7 @@ const rideInfoStore = createSlice({
 });
 
 // 解构出 actionCreator
-const { setRides, setCurrentRide, addRide, updateRide, removeRide } = rideInfoStore.actions;
+export const { setRides, setCurrentRide, addRide, updateRide, removeRide } = rideInfoStore.actions;
 
 // reducer 函数
 const rideInfoReducer = rideInfoStore.reducer;
@@ -48,7 +48,8 @@ const rideInfoReducer = rideInfoStore.reducer;
 const fetchRides = () => {
     return async (dispatch) => {
         const res = await getRidesAPI();
-        dispatch(setRides(res.data));
+       // console.log("fetchRides API res:", res);
+        dispatch(setRides(res));
     };
 };
 
