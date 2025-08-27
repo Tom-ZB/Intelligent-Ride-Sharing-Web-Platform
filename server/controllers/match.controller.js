@@ -22,32 +22,50 @@ exports.createMatch = async (req, res) => {
 // 3.2 更新匹配状态 (司机确认/拒绝)
 exports.updateMatchStatus = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { status } = req.body;
+        const matchId = req.params.id;
+        const { status } = req.body; // accepted / rejected
+        const userId = req.user.id;
 
-        // 检查状态合法性
-        const validStatuses = ['pending', 'accepted', 'declined'];
-        if (!validStatuses.includes(status)) {
-            return res.status(400).json({ error: "Invalid status value" });
+        const match = await matchDAO.getMatchById(matchId);
+        // console.log("match:", match);
+        // console.log("offerSeatsLeft:", match.offer_seats_available - match.request_seats_available);
+
+
+        if (!match) return res.status(404).json({ message: "Match not found" });
+
+        // 权限校验：只有车主或乘客才能操作
+        if (![match.offer_user_id, match.request_user_id].includes(userId)) {
+            return res.status(403).json({ message: "No permission" });
         }
 
-        // 检查匹配是否存在
-        const match = await matchDAO.getMatchById(id);
-        console.log(match);  // 查看是否包含 driver_id
-        if (!match) {
-            return res.status(404).json({ error: "Match not found" });
+        // 如果接受匹配，需要更新座位
+        if (status === "accepted") {
+            // 车主是 offer_user_id，乘客是 request_user_id
+            const offerSeatsLeft = match.offer_seats_available - match.request_seats_available;
+            if (offerSeatsLeft < 0) {
+                return res.status(200).json({
+                    success: false,
+                    message: `Not enough seats. Offer has ${match.offer_seats_available}, but request asks for ${match.request_seats_available}.`
+                });
+            }
+            await matchDAO.updateSeatsAvailable(match.offer_id, offerSeatsLeft);
         }
 
-        // 仅司机可更改状态（假设司机是 ride_offer 的创建者）
-        if (req.user.id !== match.driver_id) {
-            return res.status(403).json({ error: "Only the driver can update match status" });
-        }
+        console.log("matchId:", matchId);
+        console.log("req.body:", req.body);
+        console.log("match from DB:", match);
 
-        await matchDAO.updateMatchStatus(id, status);
-        res.json({ message: "Match status updated successfully" });
+
+        // 更新匹配状态
+        await matchDAO.updateMatchStatus(matchId, status);
+
+        // 返回更新后的匹配信息
+        const updatedMatch = await matchDAO.getMatchById(matchId);
+        res.json(updatedMatch);
+
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Failed to update match status" });
+        res.status(500).json({ message: "Server error" });
     }
 };
 

@@ -42,7 +42,7 @@ const fetchLogin = (loginForm) => {
     return async (dispatch) => {
         //1发送异步请求
         const res = await loginAPI(loginForm)
-        console.log("fetchUserInfo res.data:", res.data);
+        //console.log("fetchUserInfo res.data:", res.data);
 
         //2提交同步action进行token存入
         dispatch(setToken(res.token));

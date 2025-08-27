@@ -5,6 +5,7 @@ import { fetchRides } from "../../store/modules/rideInfo";
 import { createMatchAPI } from "../../apis/matches";
 import { request } from "../../utils";
 import user from "../../store/modules/user";
+import {createMatch} from "../../store/modules/matches";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -81,7 +82,7 @@ const RideList = () => {
                 targetRide.type === "request" ? targetRide.id : selectedMyRideId,
         };
 
-        createMatchAPI(payload)
+        createMatch(payload)
             .then(() => {
                 message.success("Request has been sent");
                 setIsModalOpen(false);

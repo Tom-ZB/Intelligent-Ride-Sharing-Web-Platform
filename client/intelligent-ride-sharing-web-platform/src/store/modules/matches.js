@@ -66,9 +66,10 @@ export const createMatch = (formData) => {
 };
 
 // 更新匹配状态
-export const changeMatchStatus = (id, status) => {
+export const changeMatchStatus = (id, status,seatsTaken) => {
     return async (dispatch) => {
         const res = await updateMatchStatusAPI(id, status);
+        console.log(res)
         dispatch(updateMatch(res));
     };
 };
