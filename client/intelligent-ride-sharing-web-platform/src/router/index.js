@@ -18,10 +18,6 @@ import RideCreate from "../pages/rides/create";
 import RideDetail from "../pages/rides/myRideList";
 import RideEdit from "../pages/rides/editRideInfo";
 
-// Matches
-import MatchList from "../pages/matches/index";
-import MatchDetail from "../pages/matches/[id]";
-
 // Chat
 import ChatList from "../pages/chat/index";
 import ChatChannel from "../pages/chat/chatChannel";
@@ -116,22 +112,6 @@ const router = createBrowserRouter([
         element: (
             <AuthRoute>
                 <Settings />
-            </AuthRoute>
-        ),
-    },
-    {
-        path: "/matches",
-        element: (
-            <AuthRoute>
-                <MatchList />
-            </AuthRoute>
-        ),
-    },
-    {
-        path: "/matches/:id",
-        element: (
-            <AuthRoute>
-                <MatchDetail />
             </AuthRoute>
         ),
     },
