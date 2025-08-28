@@ -33,18 +33,24 @@ const RideDetail = () => {
 
         const created = rides
             .filter(r => r.user.id === user.id)
-            .map(r => ({ ...r, type: "created" }));
+            .map(r => ({ ...r, type: "created",offer_seats_available: r.seatsAvailable,request_seats_available: r.seatsAvailable}));
 
         const matched = matches.map(m => {
             const isOffer = m.offer_user_id === user.id; // 当前用户是车主
-            const seatsAvailable = isOffer ? m.raw?.offer_seats_available || m.seatsAvailable : m.raw?.request_seats_available || m.seatsAvailable;
+            // ✅【修改1】直接用 rides.find 从 store 里的 rideInfo 取对应的 seatsAvailable
+            const offerRide = rides.find(r => r.id === m.ride_offer_id);
+            const requestRide = rides.find(r => r.id === m.ride_request_id);
 
             return {
                 id: m.id,
                 fromLocation: isOffer ? m.offer_from : m.request_from,
                 toLocation: isOffer ? m.offer_to : m.request_to,
                 departureTime: m.match_time,
-                seatsAvailable,
+
+                // ✅【修改2】 seats 信息从 rideInfo 对应的对象里取
+                offer_seats_available: offerRide ? offerRide.seatsAvailable : null,
+                request_seats_available: requestRide ? requestRide.seatsAvailable : null,
+
                 status: m.status,
                 type: "matched",
                 offer_user_id: m.offer_user_id,
@@ -53,6 +59,7 @@ const RideDetail = () => {
                 request_user_id: m.request_user_id,
                 request_from: m.request_from,
                 request_to: m.request_to,
+
                 raw: m
             };
         });
@@ -114,7 +121,8 @@ const RideDetail = () => {
         { title: "From", dataIndex: "fromLocation", key: "fromLocation" },
         { title: "To", dataIndex: "toLocation", key: "toLocation" },
         { title: "Departure", dataIndex: "departureTime", key: "departureTime" },
-        { title: "Seats", dataIndex: "seatsAvailable", key: "seatsAvailable" },
+        { title: "Seats Available", dataIndex: "offer_seats_available", key: "offer_seats_available" },
+        { title: "Seats Requested", dataIndex: "request_seats_available", key: "request_seats_available" },
         { title: "Status", dataIndex: "status", key: "status" },
         {
             title: "Action",
@@ -179,13 +187,14 @@ const RideDetail = () => {
                             <>
                                 <p><strong>Offer From:</strong> {selectedMatch.offer_from} → {selectedMatch.offer_to}</p>
                                 <p><strong>Request From:</strong> {selectedMatch.request_from} → {selectedMatch.request_to}</p>
-                                <p><strong>Seats Requested:</strong> {selectedMatch.seatsAvailable}</p>
+                                <p><strong>Seats Requested:</strong> {selectedMatch.request_seats_available}</p>
                                 <p><strong>Status:</strong> {selectedMatch.status}</p>
                             </>
                         ) : (
                             <>
                                 <p><strong>From:</strong> {selectedMatch.fromLocation} → {selectedMatch.toLocation}</p>
-                                <p><strong>Seats Available:</strong> {selectedMatch.seatsAvailable}</p>
+                                <p><strong>Seats Available:</strong> {selectedMatch.offer_seats_available}</p>
+                                <p><strong>Seats Requested:</strong> {selectedMatch.request_seats_available}</p>
                                 <p><strong>Status:</strong> {selectedMatch.status}</p>
                             </>
                         )}
