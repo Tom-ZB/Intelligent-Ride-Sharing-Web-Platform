@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getSocket, initSocket, sendMessage} from "../../utils/socket";
 import {addMessage} from "../../store/modules/chat";
@@ -13,6 +13,14 @@ const ChatChannel = () => {
 
     const chatIdNum = Number(chatId);  //发送消息的人
     const userIdNum = Number(user.id);  //接收消息的人或者对方的 ID
+
+    const chatEndRef = useRef(null);
+    // 自动滚动到底部
+    useEffect(() => {
+        if (chatEndRef.current) {
+            chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
 
     // 监听接收到的消息
     useEffect(() => {
@@ -35,15 +43,19 @@ const ChatChannel = () => {
 
         // 监听消息
         const handleMessage = (data) => {
-            console.log("Received message via socket:", data);
-            const { senderId, receiverId, message } = data;
-            // 只显示与当前聊天对象相关的消息
-            if ( (Number(senderId) === chatIdNum && Number(receiverId) === userIdNum) || // 对方发给自己
-                (Number(senderId) === userIdNum && Number(receiverId) === chatIdNum))  {  //自己发给对方的
+            const { senderId, receiverId, message,timestamp } = data;
+
+            // 处理可能缺少receiverId的情况
+            const actualReceiverId = receiverId ? Number(receiverId) : userIdNum;
+            const senderIdNum = Number(senderId);
+
+            // 只处理与当前聊天相关的消息
+            if (senderIdNum === chatIdNum || senderIdNum === userIdNum) {
                 dispatch(addMessage({
-                    senderId: Number(senderId),
-                    receiverId: Number(receiverId),
-                    message: message
+                    senderId: senderIdNum,
+                    receiverId: actualReceiverId,
+                    message: message,
+                    timestamp: timestamp || Date.now()
                 }));
             }
         };
@@ -61,35 +73,109 @@ const ChatChannel = () => {
             sendMessage(user.id, chatId , msg);
 
             // 本地也立即显示发送的消息
-            dispatch(addMessage({ senderId: userIdNum, receiverId: chatIdNum, message: msg }));
+            dispatch(addMessage({ senderId: userIdNum, receiverId: chatIdNum, message: msg ,timestamp: Date.now()}));
             setMsg("");
         }
     };
 
-    //console.log("Current messages in Redux:", messages);
+    // 过滤出当前对话的消息
+    const currentChatMessages = messages.filter(
+        (m) =>
+            (Number(m.senderId) === chatIdNum && Number(m.receiverId) === userIdNum) ||
+            (Number(m.senderId) === userIdNum && Number(m.receiverId) === chatIdNum)
+    );
+
+    console.log("Current chat messages:", currentChatMessages);
+    console.log("All messages in Redux:", messages);
 
     return (
-        <div>
-            <h2>Chat with {chatId }</h2>
-            <div style={{ border: "1px solid #ccc", height: 200, overflowY: "auto" }}>
-                {messages
-                    .filter(
-                        (m) =>
-                            (Number(m.senderId) === chatIdNum && Number(m.receiverId) === userIdNum) ||
-                            (Number(m.senderId) === userIdNum && Number(m.receiverId) === chatIdNum)
-                    )
-                    .map((m) => (
-                        <p key={m.id || Math.random()}>
-                            <b>{Number(m.senderId) === userIdNum ? "Me" : m.senderId}</b>: {m.message}
-                        </p>
-                    ))}
+        <div style={{ width: "400px", margin: "0 auto", fontFamily: "Arial, sans-serif" }}>
+            <h2>Chat with {chatId}</h2>
+
+            {/* 消息容器 */}
+            <div
+                style={{
+                    border: "1px solid #ccc",
+                    height: 300,
+                    overflowY: "auto",
+                    padding: "10px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                    borderRadius: "8px",
+                    marginBottom: "10px",
+                    backgroundColor: "#f9f9f9"
+                }}
+            >
+                {currentChatMessages.length === 0 ? (
+                    <div style={{ textAlign: "center", color: "#888", marginTop: "20px" }}>
+                        No messages yet. Start a conversation!
+                    </div>
+                ) : (
+                    currentChatMessages.map((m, idx) => {
+                        const isMe = Number(m.senderId) === userIdNum;
+                        return (
+                            <div
+                                key={m.id || idx}
+                                style={{
+                                    alignSelf: isMe ? "flex-end" : "flex-start",
+                                    backgroundColor: isMe ? "#dcf8c6" : "#ffffff",
+                                    padding: "8px 12px",
+                                    borderRadius: "12px",
+                                    maxWidth: "70%",
+                                    boxShadow: "0 1px 1px rgba(0,0,0,0.1)"
+                                }}
+                            >
+                                <div style={{ fontWeight: "bold", fontSize: "12px", marginBottom: "4px" }}>
+                                    {isMe ? "You" : `User ${m.senderId}`}
+                                </div>
+                                <div>{m.message}</div>
+                                <div
+                                    style={{
+                                        fontSize: "10px",
+                                        color: "#888",
+                                        textAlign: "right",
+                                        marginTop: "4px"
+                                    }}
+                                >
+                                    {new Date(m.timestamp).toLocaleTimeString()}
+                                </div>
+                            </div>
+                        );
+                    })
+                )}
+                <div ref={chatEndRef} />
             </div>
-            <input
-                value={msg}
-                onChange={(e) => setMsg(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            />
-            <button onClick={handleSend}>Send</button>
+
+            {/* 输入框和发送按钮 */}
+            <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                    style={{
+                        flex: 1,
+                        padding: "10px",
+                        borderRadius: "20px",
+                        border: "1px solid #ccc",
+                        outline: "none"
+                    }}
+                    value={msg}
+                    onChange={(e) => setMsg(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                    placeholder="Type a message..."
+                />
+                <button
+                    onClick={handleSend}
+                    style={{
+                        padding: "10px 16px",
+                        borderRadius: "20px",
+                        border: "none",
+                        backgroundColor: "#007bff",
+                        color: "white",
+                        cursor: "pointer"
+                    }}
+                >
+                    Send
+                </button>
+            </div>
         </div>
     );
 }
