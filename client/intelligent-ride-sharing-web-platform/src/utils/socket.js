@@ -16,11 +16,11 @@ export const initSocket = (userId) => {
             socket.emit("join", userId); // 用户加入房间
         });
 
-        // 监听消息
-        socket.on("receive_message", (data) => {
-            console.log("收到消息:", data);
-            store.dispatch(addMessage(data)); // 保存到 redux
-        });
+        // // 监听消息
+        // socket.on("receive_message", (data) => {
+        //     console.log("receive_message:", data);
+        //     store.dispatch(addMessage(data)); // 保存到 redux
+        // });
 
         socket.on("disconnect", () => {
             console.log("Disconnected");

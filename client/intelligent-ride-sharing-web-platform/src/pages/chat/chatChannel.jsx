@@ -49,8 +49,8 @@ const ChatChannel = () => {
             const actualReceiverId = receiverId ? Number(receiverId) : userIdNum;
             const senderIdNum = Number(senderId);
 
-            // 只处理与当前聊天相关的消息
-            if (senderIdNum === chatIdNum || senderIdNum === userIdNum) {
+            // 更精确的条件：只处理对方发给我的消息
+            if (senderIdNum === chatIdNum && actualReceiverId === userIdNum) {
                 dispatch(addMessage({
                     senderId: senderIdNum,
                     receiverId: actualReceiverId,
