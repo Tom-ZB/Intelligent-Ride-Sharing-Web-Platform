@@ -2,6 +2,7 @@ const chatDAO = require('../DAO/chatDAO');
 
 // 保存消息（供 WebSocket 调用）
 exports.saveMessage = async (senderId, receiverId, message) => {
+    console.log("前端传入的数据是",senderId, receiverId, message)
     const timestamp = await chatDAO.saveMessage(senderId, receiverId, message);
     return { senderId, receiverId, message, timestamp };
 };

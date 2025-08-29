@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Select, message, Input } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchRides } from "../../store/modules/rideInfo";
-import { createMatchAPI } from "../../apis/matches";
 import { request } from "../../utils";
-import user from "../../store/modules/user";
 import {createMatch} from "../../store/modules/matches";
+import {useNavigate} from "react-router-dom";
+
+
 
 const { Option } = Select;
 const { Search } = Input;
@@ -15,6 +16,8 @@ const RideList = () => {
     const rideInfo = useSelector((state) => state.rideInfo?.rides || []);
     const currentUser = useSelector((state) => state.user.userInfo);
 
+    const navigate = useNavigate();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMyRideId, setSelectedMyRideId] = useState(null); //选中的行程id
     const [targetRide, setTargetRide] = useState(null);  //弹窗中选中的行程id
@@ -22,12 +25,12 @@ const RideList = () => {
 
 
 
-    // ✅ 页面初始化加载所有行程
+    // 页面初始化加载所有行程
     useEffect(() => {
         dispatch(fetchRides());
     }, [dispatch]);
 
-    // ✅ 搜索（向后端请求 /rides?search=xxx）
+    // 搜索（向后端请求 /rides?search=xxx）
     const handleSearch = async (value) => {
         try {
             setLoading(true);
@@ -96,7 +99,18 @@ const RideList = () => {
     // ✅ 表格列定义（只保留排序，本地完成）
     const columns = [
         { title: "RideID", dataIndex: "id", key: "id" },
-        { title: "UserID", dataIndex: ["user", "id"], key: "userId" },
+        { title: "UserID", dataIndex: ["user", "id"], key: "userId",  render: (text, record) => (
+                record.user.id !== currentUser.id ? (  // 过滤自己
+                    <button
+                        onClick={() => navigate(`/chat/${record.user.id}`)} // 跳转到 ChatChannel 页面
+                    >
+                        {record.user.id}
+                    </button>
+                ) : (
+                    <span>Me</span>  // 自己的ID显示为 "Me"，不可点击
+                )
+            ),
+        },
         { title: "Type", dataIndex: "type", key: "type" },
         { title: "Location", dataIndex: "fromLocation", key: "fromLocation" },
         { title: "Destination", dataIndex: "toLocation", key: "toLocation" },

@@ -1,5 +1,9 @@
-const ChatList = () => {
-    return(<div>this is ChatList page</div>);
-}
+const ChatList = ({  }) => {
+    return (
+        <div>
+            <h2>ChatList</h2>
+        </div>
+    );
+};
 
-export default ChatList
+export default ChatList;

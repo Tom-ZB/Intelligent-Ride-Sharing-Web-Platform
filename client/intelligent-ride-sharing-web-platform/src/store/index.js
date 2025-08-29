@@ -4,11 +4,13 @@ import {configureStore} from "@reduxjs/toolkit";
 import userReducer from "./modules/user";
 import rideInfoReducer from "./modules/rideInfo";
 import matchesReducer from "./modules/matches";
+import chatReducer from "./modules/chat"
 
 export default configureStore({
     reducer: {
         user: userReducer,
         rideInfo: rideInfoReducer,
-        matches:matchesReducer
+        matches:matchesReducer,
+        chat:chatReducer
     }
 })
