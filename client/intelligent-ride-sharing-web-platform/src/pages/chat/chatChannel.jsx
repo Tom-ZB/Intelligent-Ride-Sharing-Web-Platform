@@ -25,15 +25,8 @@ const ChatChannel = () => {
     // 监听接收到的消息
     useEffect(() => {
         if (!userIdNum) return; // 等待用户信息可用
-        // 1️⃣ 初始化 socket
-        initSocket(user.id);
         let socket;
-        try {
-            socket = getSocket(); // 获取全局初始化的 socket
-        } catch (err) {
-            console.warn("⚠️ Socket not ready yet:", err.message);
-            return; // 防止未初始化就执行
-        }
+        socket = getSocket(); // 获取全局初始化的 socket
 
         if (!userIdNum) return; // 等待 user.id 可用
 

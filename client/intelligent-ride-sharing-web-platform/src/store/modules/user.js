@@ -61,18 +61,6 @@ const fetchUserInfo = () => {
     }
 }
 
-// const fetchUserInfo = () => {
-//     return async (dispatch) => {
-//         try {
-//             const res = await getProfileAPI();
-//             console.log("fetchUserInfo res.data:", res);
-//             dispatch(setUserInfo(res));
-//         } catch (err) {
-//             console.error("fetchUserInfo error:", err);
-//         }
-//     }
-// }
-
 
 export {fetchLogin,fetchUserInfo}
 export default userReducer

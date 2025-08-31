@@ -19,12 +19,27 @@ function chatSocket(io) {
             // 存储消息到数据库
             const savedMessage = await chatController.saveMessage(senderId, receiverId, message);
 
-            // 发送消息给接收方所在的房间，而不是直接用 receiverId 当 socketId
+            // 发送消息给接收方所在的房间
             io.to(receiverId.toString()).emit('receive_message', {
                 senderId,
                 message,
                 timestamp: savedMessage.timestamp
             });
+            // 3. 推送通知给接收方
+            const notify = await chatController.sendNotification(senderId, receiverId, message);
+            io.to(receiverId.toString()).emit('receive_notification', notify);
+        });
+
+        // 客户端主动请求通知（比如未读消息提醒）
+        socket.on('request_notifications', async (userId) => {
+            // 这里简单返回一个 demo
+            const demoNotify = {
+                senderId: 'system',
+                receiverId: userId,
+                message: 'new message received',
+                timestamp: new Date().toISOString()
+            };
+            socket.emit('receive_notification', demoNotify);
         });
 
         socket.on('disconnect', () => {

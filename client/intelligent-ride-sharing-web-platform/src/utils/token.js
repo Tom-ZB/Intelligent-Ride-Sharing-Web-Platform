@@ -3,7 +3,7 @@
 const TOKEN_KEY = "token";
 const EXPIRE_KEY = "token_expire";
 
-export function setToken(token, expiresInSeconds = 600) { //60秒过期
+export function setToken(token, expiresInSeconds = 6000) { //6000秒过期
     const expireAt = Date.now() + expiresInSeconds * 1000; // 过期时间戳
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(EXPIRE_KEY, expireAt);
