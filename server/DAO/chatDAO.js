@@ -11,7 +11,7 @@ exports.saveMessage = async (senderId, receiverId, message) => {
 };
 
 // 获取聊天历史记录（双方消息）
-exports.getChatHistory = async (userId, otherUserId) => {
+exports.getAllChats = async (userId) => {
     return await db.query(
         `SELECT
              sender_id AS senderId,
@@ -23,7 +23,7 @@ exports.getChatHistory = async (userId, otherUserId) => {
          WHERE (sender_id = ? )
             OR ( receiver_id = ?)
          ORDER BY time_stamp `,
-        [userId, otherUserId]
+        [userId, userId]
     );
 };
 
@@ -43,9 +43,11 @@ exports.getUnreadMessages = async (userId) => {
 };
 
 // 标记消息为已读
-exports.markMessageAsRead = async (messageId) => {
-    await db.query(
-        `UPDATE chat_messages SET isRead = true WHERE id = ?`,
-        [messageId]
+exports.markMessageAsRead = async (userId, otherUserId) => {
+    return await db.query(
+        `UPDATE chat_messages
+         SET isRead = true
+         WHERE sender_id = ? AND receiver_id = ? AND isRead = false`,
+        [otherUserId, userId] // 对方发给我 的消息，设为已读
     );
 };

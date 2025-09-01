@@ -5,10 +5,15 @@ import {useEffect, useState} from "react";
 import {getSocket, initSocket} from "../utils/socket";
 import user from "../store/modules/user";
 import {getUnreadMessagesAPI} from "../apis/chat";
+import {useSelector} from "react-redux";
 
 export default function Home() {
     const navigate = useNavigate();
     const [unreadCount, setUnreadCount] = useState(0); // 存储未读消息数量
+    const userId = useSelector(state => {
+
+        return state.user.userInfo.id
+    } );
 
     const handleNavClick = (path) => {
         navigate(path);
@@ -30,8 +35,9 @@ export default function Home() {
             // 2️拉取未读消息数量
             try {
                 const res = await getUnreadMessagesAPI();
-                const unreadMessages = res;
-                setUnreadCount(unreadMessages.length); // 只显示数量
+                // 只统计别人发给你的未读消息
+                const unreadMessages = res.filter(msg => msg.senderId !== userId);
+                setUnreadCount(unreadMessages.length);
             } catch (err) {
                 console.error("Failed to fetch unread messages:", err);
             }

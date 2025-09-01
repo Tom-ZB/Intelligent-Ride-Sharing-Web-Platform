@@ -9,12 +9,11 @@ exports.saveMessage = async (senderId, receiverId, message) => {
 };
 
 // 获取聊天历史（供 REST API 调用）
-exports.getChatHistory = async (req, res) => {
+exports.getAllChatHistory = async (req, res) => {
     try {
         const userId = req.user.id;
-        const otherUserId = req.params.userId;
 
-        const messages = await chatDAO.getChatHistory(userId, otherUserId);
+        const messages = await chatDAO.getAllChats(userId);
         res.json(messages); // messages 里已包含 isRead
     } catch (err) {
         console.error(err);
@@ -40,12 +39,18 @@ exports.getUnreadMessages = async (req, res) => {
 // 标记消息为已读（前端点击查看消息时调用）
 exports.markMessageAsRead = async (req, res) => {
     try {
-        const { messageId } = req.body;
-        await chatDAO.markMessageAsRead(messageId);
+        const userId = req.user.id;           // 当前登录用户
+        const { otherUserId } = req.body;     // 对方用户 ID
+
+        if (!otherUserId) {
+            return res.status(400).json({ error: "otherUserId is required" });
+        }
+
+        await chatDAO.markMessageAsRead(userId, otherUserId);
         res.json({ success: true });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to mark message as read" });
+        console.error("Error marking conversation as read:", err);
+        res.status(500).json({ error: "Failed to mark conversation as read" });
     }
 };
 

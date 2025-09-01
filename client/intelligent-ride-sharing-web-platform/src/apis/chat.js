@@ -9,18 +9,18 @@ export function getUnreadMessagesAPI() {
 }
 
 // 标记消息为已读
-export function markMessageAsReadAPI(messageId) {
+export function markMessageAsReadAPI(otherUserId) {
     return request({
         url: "/chats/mark-read",
         method: "POST",
-        data: { messageId } // request 内部会处理 JSON 序列化
+        data: { otherUserId } // request 内部会处理 JSON 序列化
     });
 }
 
 // 获取当前登录用户和指定用户的聊天历史
-export function getChatHistoryAPI(otherUserId) {
+export function getChatHistoryAPI(userId) {
     return request({
-        url: `/chats/${otherUserId}`,
+        url: `/chats/${userId}`,
         method: 'GET',
     });
 }

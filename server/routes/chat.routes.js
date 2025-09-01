@@ -4,7 +4,7 @@ const chatController = require('../controllers/chat.controller');
 const authenticateToken = require('../middleware/auth');
 
 
-router.get('/chats/:userId', authenticateToken, chatController.getChatHistory);
+router.get('/chats/:userId', authenticateToken, chatController.getAllChatHistory);
 
 // 新增：获取当前用户的未读消息
 router.get('/chats/unread', authenticateToken, chatController.getUnreadMessages);
