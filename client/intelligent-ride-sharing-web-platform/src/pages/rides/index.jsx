@@ -99,17 +99,24 @@ const RideList = () => {
     // ✅ 表格列定义（只保留排序，本地完成）
     const columns = [
         { title: "RideID", dataIndex: "id", key: "id" },
-        { title: "UserID", dataIndex: ["user", "id"], key: "userId",  render: (text, record) => (
-                record.user.id !== currentUser.id ? (  // 过滤自己
-                    <button
-                        onClick={() => navigate(`/chat/${record.user.id}`)} // 跳转到 ChatChannel 页面
-                    >
-                        {record.user.id}
+        {
+            title: "UserID",
+            dataIndex: ["user", "id"],
+            key: "userId",
+            render: (text, record) => {
+                // 如果没有 user，就用 userId 字段兜底
+                const userId = record.user ? record.user.id : record.userId;
+
+                if (!userId) return <span>-</span>; // 防御性兜底
+
+                return userId !== currentUser.id ? (
+                    <button onClick={() => navigate(`/chat/${userId}`)}>
+                        {userId}
                     </button>
                 ) : (
-                    <span>Me</span>  // 自己的ID显示为 "Me"，不可点击
-                )
-            ),
+                    <span>Me</span>
+                );
+            },
         },
         { title: "Type", dataIndex: "type", key: "type" },
         { title: "Location", dataIndex: "fromLocation", key: "fromLocation" },

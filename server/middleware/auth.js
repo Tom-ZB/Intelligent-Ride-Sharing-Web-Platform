@@ -12,6 +12,5 @@ const authMiddleware = expressjwt({
         return null;
     }
 });
-
 module.exports = authMiddleware;
 

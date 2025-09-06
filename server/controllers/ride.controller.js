@@ -4,14 +4,15 @@ const rideDAO  = require('../DAO/rideDAO');
 // 2.1 创建帖子
 exports.createRide = async (req, res) => {
     try {
-        console.log("req.user:", req.user); // 打印 JWT 解析出的用户信息
-        console.log("req.body:", req.body); // 打印前端发送的请求体
+        // console.log("req.user:", req.user); // 打印 JWT 解析出的用户信息
+        // console.log("req.body:", req.body); // 打印前端发送的请求体
 
         const userId = req.user.id; // 从 JWT 中获取用户 ID
         const { type, location, destination, availableSeats, departure_time } = req.body;
 
         const postId = await rideDAO.createRide(userId, type, location, destination,departure_time, availableSeats);
         res.json({ message: "Post created successfully", postId });
+       // console.log("创建成功")
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to create ride" });

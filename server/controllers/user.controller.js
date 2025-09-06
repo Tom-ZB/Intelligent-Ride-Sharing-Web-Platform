@@ -8,11 +8,6 @@ exports.register = async (req, res) => {
         const { username, email, password, status } = req.body;
         const avatar = req.file ? `/image/${req.file.filename}` : null;
 
-        // console.log('req.headers:', req.headers['content-type']);
-        // console.log('req.body:', req.body);
-        // console.log('password:', password);
-        // console.log(avatar)
-
         // 1. 检查邮箱是否已经存在
         const existingUser = await userDAO.getUserByEmail(email);
         if (existingUser) {

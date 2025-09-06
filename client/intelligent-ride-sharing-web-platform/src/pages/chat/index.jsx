@@ -23,7 +23,6 @@ const ChatList = () => {
                 const res = await getChatHistoryAPI(userId);
                 const history = res.sort((a, b) => new Date(a.time_stamp) - new Date(b.time_stamp));
                 dispatch(setMessages(history));
-
                 const counts = {};
                 history.forEach(msg => {
                     if (msg.senderId !== userId && !msg.isRead) {

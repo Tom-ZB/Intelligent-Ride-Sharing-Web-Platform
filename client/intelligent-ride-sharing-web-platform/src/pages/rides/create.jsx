@@ -37,8 +37,9 @@ const RideCreate = () => {
 
         try {
             const res = await createRideAPI(form);
-            console.log("到这了")
-            dispatch(addRide(res)); // 更新 Redux
+            // console.log(form)
+            // console.log("到这了")
+            dispatch(addRide(res)); // 更新 Redux 添加创建的新行程
             setMessage("✅ Ride created successfully!");
             navigate("/rides"); // 跳转到行程列表
         } catch (err) {
