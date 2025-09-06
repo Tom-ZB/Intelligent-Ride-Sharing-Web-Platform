@@ -86,3 +86,19 @@ exports.findMatchById = async (id) => {
     const [rows] = await db.query(sql, [id]);
     return rows[0];
 };
+
+// 新增：获取全部匹配
+exports.findAllMatches = async () => {
+    const sql = `
+    SELECT m.*, 
+           ro.from_location AS offer_from,
+           ro.to_location AS offer_to,
+           rr.from_location AS request_from,
+           rr.to_location AS request_to
+    FROM ride_match m
+    LEFT JOIN ride_info ro ON m.ride_offer_id = ro.id
+    LEFT JOIN ride_info rr ON m.ride_request_id = rr.id
+  `;
+    const [rows] = await db.query(sql);
+    return rows; // 返回数组
+};

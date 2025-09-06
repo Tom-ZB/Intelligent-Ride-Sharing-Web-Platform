@@ -98,3 +98,14 @@ exports.getMatchById = async (req, res) => {
         res.status(500).json({ error: "Failed to fetch match" });
     }
 };
+
+// 获取全部匹配数据
+exports.getAllMatches = async (req, res) => {
+    try {
+        const matches = await matchDAO.findAllMatches();
+        res.json(matches);
+    } catch (err) {
+        console.error("Error getting all matches:", err);
+        res.status(500).json({ error: "Failed to fetch matches" });
+    }
+};

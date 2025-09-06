@@ -1,6 +1,7 @@
 // 路由配置
 import { createBrowserRouter } from "react-router-dom";
 import { AuthRoute } from "../components/AuthRoute";
+import { AdminRoute } from "../components/AdminRoute";
 
 import Home from "../pages/index";
 
@@ -89,6 +90,24 @@ const router = createBrowserRouter([
                 path: "ai",
                 element: <AIAnswer />,
             },
+
+            {
+                path: "/user/profile",
+                element: (
+                    <AuthRoute>
+                        <Profile />
+                    </AuthRoute>
+                ),
+            },
+
+            {
+                path: "/user/setting",
+                element: (
+                    <AuthRoute>
+                        <Settings />
+                    </AuthRoute>
+                ),
+            },
         ],
     },
     {
@@ -100,26 +119,12 @@ const router = createBrowserRouter([
         element: <Register />,
     },
     {
-        path: "/user/profile",
-        element: (
-            <AuthRoute>
-                <Profile />
-            </AuthRoute>
-        ),
-    },
-    {
-        path: "/user/setting",
-        element: (
-            <AuthRoute>
-                <Settings />
-            </AuthRoute>
-        ),
-    },
-    {
         path: "/admin/dashboard",
         element: (
             <AuthRoute>
-                <AdminDashboard />
+                <AdminRoute>
+                    <AdminDashboard />
+                </AdminRoute>
             </AuthRoute>
         ),
     },
@@ -127,7 +132,9 @@ const router = createBrowserRouter([
         path: "/admin/users",
         element: (
             <AuthRoute>
-                <AdminUsers />
+                <AdminRoute>
+                    <AdminUsers />
+                </AdminRoute>
             </AuthRoute>
         ),
     },

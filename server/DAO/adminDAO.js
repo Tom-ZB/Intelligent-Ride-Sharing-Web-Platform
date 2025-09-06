@@ -2,7 +2,7 @@ const db = require('../models/db');
 
 // 获取所有用户
 exports.getAllUsers = async () => {
-    const [rows] = await db.query(
+    const rows = await db.query(
         `SELECT id, username, email, role, status, created_time
          FROM user
          ORDER BY created_time DESC`

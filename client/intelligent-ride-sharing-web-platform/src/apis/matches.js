@@ -42,3 +42,11 @@ export function deleteMatchAPI(id) {
         method: "DELETE"
     });
 }
+
+// 获取全部匹配数据
+export function getAllMatchesAPI() {
+    return request({
+        url: "/matches/all",
+        method: "GET"
+    });
+}

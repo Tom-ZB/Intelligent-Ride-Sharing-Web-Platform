@@ -47,13 +47,14 @@ exports.login = async (req, res) => {
         const match = await bcrypt.compare(password, user.password);  //用来验证输入的密码和哈希是否匹配
         if (!match) return res.status(401).json({ error: "Invalid email or password" });
 
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        const token = jwt.sign({ id: user.id, email: user.email ,role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
         res.json({
             token,
             user: {
                 id: user.id,
                 username: user.username,
+                role: user.role,
                 status: user.status
             }
         });

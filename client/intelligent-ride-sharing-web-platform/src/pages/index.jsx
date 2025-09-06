@@ -62,6 +62,7 @@ export default function Home() {
 
     const handleUnreadClick = () => {
         // 点击未读消息，跳转到 ChatList 页面
+        setUnreadCount(0); // ✅ 清空未读数量
         navigate("/chat");
     };
 

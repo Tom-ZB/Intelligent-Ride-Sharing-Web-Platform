@@ -15,4 +15,7 @@ router.get('/matches', authenticateToken, matchController.getMatchesByUser);
 // 获取单个匹配详情
 router.get('/matches/:id', authenticateToken, matchController.getMatchById);
 
+// 获取全部匹配数据（管理员可访问或普通用户可访问视情况）
+router.get('/matches/all', authenticateToken, matchController.getAllMatches);
+
 module.exports = router;

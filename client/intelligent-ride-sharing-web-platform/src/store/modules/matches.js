@@ -5,7 +5,7 @@ import {
     getMatchByIdAPI,
     createMatchAPI,
     updateMatchStatusAPI,
-    deleteMatchAPI
+    deleteMatchAPI, getAllMatchesAPI
 } from "../../apis/matches";
 
 const matchesStore = createSlice({
@@ -40,6 +40,18 @@ export const { setMatches, setCurrentMatch, addMatch, updateMatch, removeMatch }
 const matchesReducer = matchesStore.reducer;
 
 // ================= 异步方法 =================
+
+//获取全部匹配数据
+export const fetchAllMatches = () => {
+    return async (dispatch) => {
+        try {
+            const res = await getAllMatchesAPI(); // 调用后端接口
+            dispatch(setMatches(res));
+        } catch (err) {
+            console.error("failed to load matches info:", err);
+        }
+    };
+};
 
 // 获取用户所有匹配行程
 export const fetchMatchesByUser = (userId) => {

@@ -1,0 +1,77 @@
+.user-list-container {
+  padding: 2rem;
+  background: #f9f9f9;
+
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  th, td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+  }
+
+  th {
+    background: #f0f0f0;
+    font-weight: 600;
+  }
+
+  .banned-row {
+    background-color: #ffe6e6;
+    color: #a00;
+  }
+
+  .ban-btn, .unban-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .ban-btn {
+    background: #ff4d4f;
+    color: #fff;
+
+    &:hover {
+      background: #d9363e;
+    }
+  }
+
+  .unban-btn {
+    background: #52c41a;
+    color: #fff;
+
+    &:hover {
+      background: #389e0d;
+    }
+  }
+}
+.back-button {
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background: #1890ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #40a9ff;
+  }
+}

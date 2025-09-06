@@ -7,7 +7,7 @@ import "./login.scss";
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { token } = useSelector((state) => state.user);
+    const userInfo  = useSelector((state) => state.user.userInfo);
 
     const [loginForm, setLoginForm] = useState({ email: "", password: "" });
     const [loading, setLoading] = useState(false);
@@ -26,9 +26,19 @@ const Login = () => {
         setLoading(true);
 
         try {
+            // dispatch(fetchLogin) 会把 token 和 userInfo 存到 redux
             await dispatch(fetchLogin(loginForm));
-            // 登录成功 → 跳转首页
-            navigate("/");
+
+            // 从 redux 里拿 role
+            const role = userInfo.role
+            console.log(role)
+
+            if (role === "admin") {
+                navigate("/admin/dashboard"); // 管理员跳后台
+            } else {
+                navigate("/"); // 普通用户跳首页
+            }
+
         } catch (err) {
             console.error("Login error:", err);
             setError("login failed，please check your account or password");
