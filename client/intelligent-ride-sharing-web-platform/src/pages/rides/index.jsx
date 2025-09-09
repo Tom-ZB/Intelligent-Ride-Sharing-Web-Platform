@@ -23,12 +23,11 @@ const RideList = () => {
     const [targetRide, setTargetRide] = useState(null);  //弹窗中选中的行程id
     const [loading, setLoading] = useState(false);
 
-
-
     // 页面初始化加载所有行程
     useEffect(() => {
         dispatch(fetchRides());
     }, [dispatch]);
+
 
     // 搜索（向后端请求 /rides?search=xxx）
     const handleSearch = async (value) => {
@@ -96,6 +95,18 @@ const RideList = () => {
             });
     };
 
+    const formatDateDDMMYYHHMM = (isoDate) => {
+        const date = new Date(isoDate);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = String(date.getFullYear()).slice(-2);
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
+    };
+
+
+
     // ✅ 表格列定义（只保留排序，本地完成）
     const columns = [
         { title: "RideID", dataIndex: "id", key: "id" },
@@ -125,6 +136,7 @@ const RideList = () => {
             title: "Departure Time",
             dataIndex: "departureTime",
             key: "departureTime",
+            render: (text) => formatDateDDMMYYHHMM(text),
             sorter: (a, b) => new Date(a.departureTime) - new Date(b.departureTime),
         },
         {

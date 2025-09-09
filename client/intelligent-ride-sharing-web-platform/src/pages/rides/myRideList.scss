@@ -1,0 +1,83 @@
+.ride-detail {
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+
+  h2 {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+  }
+
+  .ant-table-wrapper {
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .ant-table-thead > tr > th {
+    background-color: #f0f2f5;
+    font-weight: bold;
+    color: #555;
+    text-align: center;
+  }
+
+  .ant-table-tbody > tr > td {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    .ant-btn {
+      min-width: 60px;
+    }
+  }
+
+  .details-button {
+    display: flex;
+    justify-content: center;
+  }
+
+  // Modal 样式
+  .ant-modal-content {
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 14px;
+    color: #333;
+
+    p {
+      margin-bottom: 10px;
+
+      strong {
+        color: #007bff;
+      }
+    }
+  }
+
+  // 弹窗按钮
+  .ant-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  // 自定义状态颜色
+  .status-accepted {
+    color: green;
+    font-weight: bold;
+  }
+  .status-pending {
+    color: orange;
+    font-weight: bold;
+  }
+  .status-cancelled {
+    color: red;
+    font-weight: bold;
+  }
+}

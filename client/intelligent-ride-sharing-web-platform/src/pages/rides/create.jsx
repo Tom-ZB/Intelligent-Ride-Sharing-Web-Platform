@@ -17,6 +17,17 @@ const RideCreate = () => {
         availableSeats: 1,
     });
 
+    const formatForInput = (isoDate) => {
+        const date = new Date(isoDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
@@ -92,7 +103,7 @@ const RideCreate = () => {
                         <input
                             type="datetime-local"
                             name="departure_time"
-                            value={form.departure_time}
+                            value={formatForInput(form.departure_time)}
                             onChange={handleChange}
                             required
                         />
