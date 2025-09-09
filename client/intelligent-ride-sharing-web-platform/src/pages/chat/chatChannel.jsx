@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getSocket, initSocket, sendMessage} from "../../utils/socket";
 import {addMessage} from "../../store/modules/chat";
+import "./chatChannel.scss"
 
 const ChatChannel = () => {
     const { chatId  } = useParams(); // 从路由获取行程列表用户id即消息接收方id
@@ -82,57 +83,20 @@ const ChatChannel = () => {
     console.log("All messages in Redux:", messages);
 
     return (
-        <div style={{ width: "400px", margin: "0 auto", fontFamily: "Arial, sans-serif" }}>
+        <div className="chat-channel">
             <h2>Chat with {chatId}</h2>
 
-            {/* 消息容器 */}
-            <div
-                style={{
-                    border: "1px solid #ccc",
-                    height: 300,
-                    overflowY: "auto",
-                    padding: "10px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                    borderRadius: "8px",
-                    marginBottom: "10px",
-                    backgroundColor: "#f9f9f9"
-                }}
-            >
+            <div className="messages-container">
                 {currentChatMessages.length === 0 ? (
-                    <div style={{ textAlign: "center", color: "#888", marginTop: "20px" }}>
-                        No messages yet. Start a conversation!
-                    </div>
+                    <div className="no-messages">No messages yet. Start a conversation!</div>
                 ) : (
                     currentChatMessages.map((m, idx) => {
                         const isMe = Number(m.senderId) === userIdNum;
                         return (
-                            <div
-                                key={m.id || idx}
-                                style={{
-                                    alignSelf: isMe ? "flex-end" : "flex-start",
-                                    backgroundColor: isMe ? "#dcf8c6" : "#ffffff",
-                                    padding: "8px 12px",
-                                    borderRadius: "12px",
-                                    maxWidth: "70%",
-                                    boxShadow: "0 1px 1px rgba(0,0,0,0.1)"
-                                }}
-                            >
-                                <div style={{ fontWeight: "bold", fontSize: "12px", marginBottom: "4px" }}>
-                                    {isMe ? "You" : `User ${m.senderId}`}
-                                </div>
-                                <div>{m.message}</div>
-                                <div
-                                    style={{
-                                        fontSize: "10px",
-                                        color: "#888",
-                                        textAlign: "right",
-                                        marginTop: "4px"
-                                    }}
-                                >
-                                    {new Date(m.timestamp).toLocaleTimeString()}
-                                </div>
+                            <div key={m.id || idx} className={`message ${isMe ? "me" : "other"}`}>
+                                <div className="sender">{isMe ? "You" : `User ${m.senderId}`}</div>
+                                <div className="text">{m.message}</div>
+                                <div className="timestamp">{new Date(m.timestamp).toLocaleTimeString()}</div>
                             </div>
                         );
                     })
@@ -140,37 +104,17 @@ const ChatChannel = () => {
                 <div ref={chatEndRef} />
             </div>
 
-            {/* 输入框和发送按钮 */}
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div className="input-container">
                 <input
-                    style={{
-                        flex: 1,
-                        padding: "10px",
-                        borderRadius: "20px",
-                        border: "1px solid #ccc",
-                        outline: "none"
-                    }}
                     value={msg}
                     onChange={(e) => setMsg(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSend()}
                     placeholder="Type a message..."
                 />
-                <button
-                    onClick={handleSend}
-                    style={{
-                        padding: "10px 16px",
-                        borderRadius: "20px",
-                        border: "none",
-                        backgroundColor: "#007bff",
-                        color: "white",
-                        cursor: "pointer"
-                    }}
-                >
-                    Send
-                </button>
+                <button onClick={handleSend}>Send</button>
             </div>
         </div>
     );
-}
+};
 
 export default ChatChannel
