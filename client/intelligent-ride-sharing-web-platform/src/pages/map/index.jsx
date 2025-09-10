@@ -5,6 +5,7 @@ import L from "leaflet";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "leaflet-routing-machine";
 import "./index.scss";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 
 // 地名 -> 经纬度
@@ -26,7 +27,48 @@ function MapPage() {
     const [toName, setToName] = useState("");
     const [tripInfo, setTripInfo] = useState(null);
 
+    // 新增状态：交通事件数据
+    const [events, setEvents] = useState([]);
+    const [displayedEvents, setDisplayedEvents] = useState([]);
+    const [hasMore, setHasMore] = useState(true);
+
     const routingControlRef = useRef(null);
+
+    // 请求 NZTA API
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const resp = await fetch(
+                    "https://trafficnz.info/service/traffic/rest/4/events/all/10",
+                    { headers: { Accept: "application/json" } }
+                );
+                if (!resp.ok) throw new Error("网络请求失败");
+
+                const data = await resp.json();
+
+                // NZTA 返回的数据在 data.response.roadevent 里
+                const allEvents = data.response?.roadevent || [];
+
+                setEvents(allEvents);
+                setDisplayedEvents(allEvents.slice(0, 10)); // 先显示前 10 条
+                // setHasMore(allEvents.length > 10);
+            } catch (err) {
+                console.error("加载事件失败:", err);
+            }
+        };
+
+        fetchEvents();
+    }, []);
+
+    // 无限滚动加载更多
+    const fetchMoreData = () => {
+        if (displayedEvents.length >= events.length) {
+            setHasMore(false);
+            return;
+        }
+        const nextBatch = events.slice(displayedEvents.length, displayedEvents.length + 10);
+        setDisplayedEvents(displayedEvents.concat(nextBatch));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -109,6 +151,27 @@ function MapPage() {
                         <p>Estimated duration: {tripInfo.durationMin} minutes</p>
                     </div>
                 )}
+
+                <div id="scrollableDiv">
+                    <InfiniteScroll
+                        dataLength={displayedEvents.length}
+                        next={fetchMoreData}
+                        hasMore={hasMore}
+                        loader={<h5>加载更多...</h5>}
+                        endMessage={<p>已经到底了</p>}
+                        scrollableTarget="scrollableDiv"
+                    >
+                        {displayedEvents.map(event => (
+                            <div key={event.id} style={{ padding: '10px', borderBottom: '1px solid #eee' }}>
+                                <strong>{event.eventType}</strong> — {event.eventDescription}
+                                <br />
+                                <small>
+                                    道路: {event.journey?.name || "未知"}, 状态: {event.status}, 区域: {event.region?.name || "未知"}
+                                </small>
+                            </div>
+                        ))}
+                    </InfiniteScroll>
+                </div>
             </div>
 
             <div className="map-container">
