@@ -88,4 +88,8 @@
       border-left: 1px solid #ddd;
     }
   }
+  #scrollableDiv {
+    flex: 1;         /* 占满父容器剩余空间 */
+    overflow: auto;  /* 内容多了就滚动 */
+  }
 }
