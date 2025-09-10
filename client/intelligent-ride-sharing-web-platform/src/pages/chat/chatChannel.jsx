@@ -45,11 +45,18 @@ const ChatChannel = () => {
 
             // 更精确的条件：只处理对方发给我的消息
             if (senderIdNum === chatIdNum && actualReceiverId === userIdNum) {
+                // 把传来的 timestamp 规范成数字（如果无法转换则用 Date.now()）
+                let tsCandidate = null;
+                if (timestamp !== undefined && timestamp !== null) {
+                    tsCandidate = (typeof timestamp === "number") ? timestamp : Number(timestamp);
+                }
+                const ts = Number.isFinite(tsCandidate) ? tsCandidate : Date.now();
+
                 dispatch(addMessage({
                     senderId: senderIdNum,
                     receiverId: actualReceiverId,
                     message: message,
-                    timestamp: timestamp || Date.now()
+                    timestamp: ts
                 }));
             }
         };
@@ -82,6 +89,28 @@ const ChatChannel = () => {
     console.log("Current chat messages:", currentChatMessages);
     console.log("All messages in Redux:", messages);
 
+    function formatDate(ts) {
+        if (ts == null) return ""; // 没有时间时返回空字符串
+
+        // 优先把 ts 转为数字（支持数字和数字字符串）
+        let ms = Number(ts);
+        if (!Number.isFinite(ms)) {
+            // 如果不是纯数字，尝试 Date.parse（允许 ISO 字符串等）
+            ms = Date.parse(ts);
+        }
+        if (!Number.isFinite(ms)) return ""; // 无法解析则返回空，避免 NaN/... 显示
+
+        const d = new Date(ms);
+        const year = d.getFullYear();
+        const month = d.getMonth() + 1; // 不强制补 0，结果像 2025/9/9
+        const day = d.getDate();
+        const hour = d.getHours().toString().padStart(2, "0");
+        const minute = d.getMinutes().toString().padStart(2, "0");
+        const second = d.getSeconds().toString().padStart(2, "0");
+        return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
+    }
+
+
     return (
         <div className="chat-channel">
             <h2>Chat with {chatId}</h2>
@@ -96,7 +125,7 @@ const ChatChannel = () => {
                             <div key={m.id || idx} className={`message ${isMe ? "me" : "other"}`}>
                                 <div className="sender">{isMe ? "You" : `User ${m.senderId}`}</div>
                                 <div className="text">{m.message}</div>
-                                <div className="timestamp">{new Date(m.timestamp).toLocaleTimeString()}</div>
+                                <div className="timestamp">{formatDate(m.timestamp)}</div>
                             </div>
                         );
                     })
