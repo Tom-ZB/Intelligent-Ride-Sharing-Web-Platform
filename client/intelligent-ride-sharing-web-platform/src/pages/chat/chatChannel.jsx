@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getSocket, initSocket, sendMessage} from "../../utils/socket";
+import {getSocket, sendMessage} from "../../utils/socket";
 import {addMessage} from "../../store/modules/chat";
 import "./chatChannel.scss"
 
@@ -10,7 +10,15 @@ const ChatChannel = () => {
     const [msg, setMsg] = useState("");
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userInfo);
-    const messages = useSelector((state) => state.chat.messages);
+    // 在获取 Redux messages 后，对历史消息做字段规范化
+    const messages = useSelector((state) =>
+        state.chat.messages.map(msg => ({
+            ...msg,
+            // 如果有 timestamp 用 timestamp，否则用 time_stamp
+            timestamp: msg.timestamp || (msg.time_stamp ? new Date(msg.time_stamp).getTime() : Date.now())
+        }))
+    );
+
 
     const chatIdNum = Number(chatId);  //发送消息的人
     const userIdNum = Number(user.id);  //接收消息的人或者对方的 ID
@@ -109,7 +117,6 @@ const ChatChannel = () => {
         const second = d.getSeconds().toString().padStart(2, "0");
         return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
     }
-
 
     return (
         <div className="chat-channel">
