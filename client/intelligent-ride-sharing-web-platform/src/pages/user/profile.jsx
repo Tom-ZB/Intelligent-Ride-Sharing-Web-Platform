@@ -14,6 +14,7 @@ const Profile = () => {
     useEffect(() => {
         console.log("Profile mounted, dispatching fetchUserInfo");
         dispatch(fetchUserInfo());
+        console.log(userInfo)
     }, [dispatch]);
 
 
@@ -22,19 +23,31 @@ const Profile = () => {
         return <div className="profile-container">loading...</div>;
     }
 
+    const formatDate = (isoString) => {
+        const date = new Date(isoString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从 0 开始
+        const year = String(date.getFullYear()).slice(-2); // 取年份后两位
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
+    };
+
+
     return (
         <div className="profile-container">
             <h2>Info</h2>
             <div className="profile-card">
                 <img
-                    src={userInfo.avatar ? `/image/${userInfo.avatar}` : "/default-avatar.png"}
+                    src={`http://localhost:3000${userInfo.avatar}`}
                     alt="avatar"
                     className="profile-avatar"
                 />
                 <div className="profile-info">
                     <p><strong>username：</strong> {userInfo.username}</p>
                     <p><strong>email：</strong> {userInfo.email}</p>
-                    <p><strong>registration time：</strong> {userInfo.created_time}</p>
+                    <p><strong>registration time：</strong> {formatDate(userInfo.created_time)}</p>
                     <p><strong>status：</strong> {userInfo.status}</p>
                     <p><strong>role：</strong> {userInfo.role}</p>
                 </div>

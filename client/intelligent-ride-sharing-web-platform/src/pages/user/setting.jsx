@@ -1,5 +1,5 @@
 // src/pages/user/Setting.jsx
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getToken, removeToken } from "../../utils";
 import { setUserInfo, clearUserInfo } from "../../store/modules/user";
@@ -17,10 +17,12 @@ const Setting = () => {
         username: reduxUser?.username || "",
         email: reduxUser?.email || "",
         password: "",
-        avatar: null,
+        avatar: reduxUser.avatar || null,
     });
 
-    const [avatarPreview, setAvatarPreview] = useState(reduxUser?.avatar || null);
+    useEffect(() =>console.log("reduxUser: ",reduxUser),[])
+
+    const [avatarPreview, setAvatarPreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
@@ -117,14 +119,19 @@ const Setting = () => {
             <div className="form-group">
                 <label>Avatar</label>
                 <input type="file" accept="image/*" onChange={handleAvatarChange} />
-                {avatarPreview && (
+                {avatarPreview || reduxUser.avatar ? (
                     <img
-                        src={avatarPreview}
+                        src={
+                            avatarPreview
+                                ? avatarPreview
+                                : `http://localhost:3000${reduxUser.avatar}`
+                        }
                         alt="avatar preview"
                         className="avatar-preview"
                     />
-                )}
+                ) : null}
             </div>
+
 
             <button className="save-btn" onClick={handleSave} disabled={loading}>
                 {loading ? "Saving..." : "save"}

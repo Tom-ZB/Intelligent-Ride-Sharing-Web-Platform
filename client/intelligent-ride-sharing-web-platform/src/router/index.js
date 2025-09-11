@@ -53,7 +53,7 @@ const router = createBrowserRouter([
                 element: (
                     <>
                         <MapPage />
-                        <AIAnswer />
+                        {/*<AIAnswer />*/}
                     </>
                 ),
             },
