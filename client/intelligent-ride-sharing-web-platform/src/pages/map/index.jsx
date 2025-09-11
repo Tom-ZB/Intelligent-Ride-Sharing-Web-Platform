@@ -42,7 +42,7 @@ function MapPage() {
                     "https://trafficnz.info/service/traffic/rest/4/events/all/10",
                     { headers: { Accept: "application/json" } }
                 );
-                if (!resp.ok) throw new Error("网络请求失败");
+                if (!resp.ok) throw new Error("failed to fetch");
 
                 const data = await resp.json();
 
@@ -53,7 +53,7 @@ function MapPage() {
                 setDisplayedEvents(allEvents.slice(0, 10)); // 先显示前 10 条
                 // setHasMore(allEvents.length > 10);
             } catch (err) {
-                console.error("加载事件失败:", err);
+                console.error("failed to load:", err);
             }
         };
 
@@ -157,8 +157,8 @@ function MapPage() {
                         dataLength={displayedEvents.length}
                         next={fetchMoreData}
                         hasMore={hasMore}
-                        loader={<h5>加载更多...</h5>}
-                        endMessage={<p>已经到底了</p>}
+                        loader={<h5>load more...</h5>}
+                        endMessage={<p>it is the edge</p>}
                         scrollableTarget="scrollableDiv"
                     >
                         {displayedEvents.map(event => (
@@ -166,7 +166,7 @@ function MapPage() {
                                 <strong>{event.eventType}</strong> — {event.eventDescription}
                                 <br />
                                 <small>
-                                    道路: {event.journey?.name || "未知"}, 状态: {event.status}, 区域: {event.region?.name || "未知"}
+                                    Road: {event.journey?.name || "unknown"}, status: {event.status}, region: {event.region?.name || "unknown"}
                                 </small>
                             </div>
                         ))}
