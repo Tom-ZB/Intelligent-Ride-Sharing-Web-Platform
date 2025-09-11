@@ -64,4 +64,22 @@
   50% { background-color: #ffd27f; }
   100% { background-color: #ffefc5; }
 }
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+
+  img {
+    width: 120px;
+    height: auto;
+    border-radius: 8px; // 可选：让 logo 有圆角
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); // 添加轻微阴影
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05); // 鼠标悬停时轻微放大
+    }
+  }
+}
 

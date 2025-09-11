@@ -6,6 +6,7 @@ import {getSocket, initSocket} from "../utils/socket";
 import user from "../store/modules/user";
 import {getUnreadMessagesAPI} from "../apis/chat";
 import {useSelector} from "react-redux";
+import logo from '../assets/LOGO.png';
 
 export default function Home() {
     const navigate = useNavigate();
@@ -70,7 +71,10 @@ export default function Home() {
         <div className="home">
             {/* 顶部导航 */}
             <header className="home-header">
-                <div className="logo">LOGO</div>
+                <div className="logo">  <img
+                    src={logo}
+                    alt="Logo"
+                /></div>
                 <nav className="nav-buttons">
                     <button onClick={() => handleNavClick("/")}>Home</button>
                     <button onClick={() => handleNavClick("/rides/create")}>Post a Ride</button>
