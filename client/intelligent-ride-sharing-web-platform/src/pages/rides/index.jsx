@@ -15,6 +15,8 @@ const RideList = () => {
     const dispatch = useDispatch();
     const rideInfo = useSelector((state) => state.rideInfo?.rides || []);
     const currentUser = useSelector((state) => state.user.userInfo);
+    const existingMatches = useSelector((state) => state.matches.matches);
+
 
     const navigate = useNavigate();
 
@@ -70,21 +72,32 @@ const RideList = () => {
         setIsModalOpen(true);
     };
 
-    // 确认匹配
     const confirmMatch = () => {
         if (!selectedMyRideId) {
-            message.warning("Select your ride");
+            message.warning("Select a ride to match with");
             return;
         }
 
+        const otherRide = rideInfo.find(r => r.id === selectedMyRideId);
+        if (!otherRide) {
+            message.error("Selected ride not found");
+            return;
+        }
+
+        // 必须是对向类型
+        if (otherRide.type === targetRide.type) {
+            message.warning("Please select a ride of the opposite type");
+            return;
+        }
+
+        // 构建 payload
+        const isTargetOffer = targetRide.type === "offer";
         const payload = {
-            ride_offer_id:
-                targetRide.type === "offer" ? targetRide.id : selectedMyRideId,
-            ride_request_id:
-                targetRide.type === "request" ? targetRide.id : selectedMyRideId,
+            ride_offer_id: isTargetOffer ? targetRide.id : otherRide.id,
+            ride_request_id: isTargetOffer ? otherRide.id : targetRide.id,
         };
 
-        createMatch(payload)
+        dispatch(createMatch(payload))
             .then(() => {
                 message.success("Request has been sent");
                 setIsModalOpen(false);
@@ -94,6 +107,7 @@ const RideList = () => {
                 message.error("Match failed");
             });
     };
+
 
     const formatDateDDMMYYHHMM = (isoDate) => {
         const date = new Date(isoDate);
@@ -161,16 +175,23 @@ const RideList = () => {
         {
             title: "Operate",
             key: "action",
-            render: (_, record) => (
-                <Button
-                    type="primary"
-                    disabled={record.status !== "active" || record.seatsAvailable === 0}
-                    onClick={() => openMatchModal(record)}
-                >
-                    Match
-                </Button>
-            ),
+            render: (_, record) => {
+                // 只有当前用户的行程才显示 Match 按钮
+                if (record.user?.id === currentUser.id) {
+                    return (
+                        <Button
+                            type="primary"
+                            disabled={record.status !== "active" || record.seatsAvailable === 0}
+                            onClick={() => openMatchModal(record)}
+                        >
+                            Match
+                        </Button>
+                    );
+                }
+                return null; // 别人的行程不显示按钮
+            },
         },
+
     ];
 
     return (
@@ -201,25 +222,40 @@ const RideList = () => {
                 onOk={confirmMatch}
                 onCancel={() => setIsModalOpen(false)}
             >
+
+
                 <Select
                     style={{ width: "100%" }}
-                    placeholder="Select your ride"
+                    placeholder="Select a ride to match with"
                     onChange={(value) => setSelectedMyRideId(value)}
                 >
                     {rideInfo
-                        .filter(
-                            r =>
-                                r.type !== targetRide?.type &&
-                                r.status === "active" &&
-                                r.user.id !== currentUser.id // currentUserId 就是 Redux 里的 user.id
-                        )
-                        .map((r) => (
+                        .filter(r => {
+                            if (!targetRide) return false; // ✅ targetRide 为空时直接跳过
+                            if (r.type === targetRide.type) return false;
+                            if (r.user?.id === currentUser?.id) return false;
+                            if (r.status !== "active") return false;
+
+                            const alreadyMatched = existingMatches.some(m => {
+                                if (!m) return false;
+                                return (
+                                    (m.ride_offer_id === targetRide.id && m.ride_request_id === r.id) ||
+                                    (m.ride_offer_id === r.id && m.ride_request_id === targetRide.id)
+                                );
+                            });
+
+                            return !alreadyMatched;
+                        })
+                        .map(r => (
                             <Option key={r.id} value={r.id}>
-                                {r.type} | {r.fromLocation} → {r.toLocation} |{" "}
-                                {r.departureTime}
+                                {r.type} | {r.fromLocation} → {r.toLocation} | {formatDateDDMMYYHHMM(r.departureTime)}
                             </Option>
                         ))}
+
                 </Select>
+
+
+
             </Modal>
         </div>
     );

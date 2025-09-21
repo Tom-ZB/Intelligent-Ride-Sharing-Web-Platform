@@ -1,14 +1,16 @@
 const db = require('../models/db');
 
 // 3.1 发起匹配请求（插入一条新的匹配记录）
-exports.createMatch = async (ride_offer_id, ride_request_id) => {
+exports.createMatch = async (ride_offer_id, ride_request_id, initiator_user_id) => {
     const result = await db.query(
-        `INSERT INTO ride_match (ride_offer_id, ride_request_id,match_time, status)
-         VALUES (?, ?, now(),'pending')`,
-        [ride_offer_id, ride_request_id]
+        `INSERT INTO ride_match
+             (ride_offer_id, ride_request_id, match_time, status, initiator_user_id)
+         VALUES (?, ?, NOW(), 'pending', ?)`,
+        [ride_offer_id, ride_request_id, initiator_user_id]
     );
     return result.insertId;
 };
+
 
 // 3.2 获取匹配信息（根据匹配 ID 获取一条匹配记录）
 exports.getMatchById = async (matchId) => {

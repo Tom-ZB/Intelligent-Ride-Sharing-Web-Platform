@@ -74,15 +74,17 @@ export const createMatch = (formData) => {
     return async (dispatch) => {
         const res = await createMatchAPI(formData);
         dispatch(addMatch(res));
+        return res;
     };
 };
 
 // 更新匹配状态
-export const changeMatchStatus = (id, status,seatsTaken) => {
+export const changeMatchStatus = (id, status) => {
     return async (dispatch) => {
         const res = await updateMatchStatusAPI(id, status);
         console.log(res)
         dispatch(updateMatch(res));
+        return res; // 返回给组件
     };
 };
 

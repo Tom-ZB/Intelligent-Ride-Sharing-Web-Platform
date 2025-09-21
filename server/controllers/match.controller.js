@@ -4,27 +4,30 @@ const matchDAO = require('../DAO/matchDAO');
 exports.createMatch = async (req, res) => {
     try {
         const { ride_offer_id, ride_request_id } = req.body;
+        const initiator_user_id = req.user.id; // 从 token 里拿当前登录用户
 
-        // 检查字段
-        if (!ride_offer_id || !ride_request_id) {
-            return res.status(400).json({ error: "Missing ride_offer_id or ride_request_id" });
-        }
+        const matchId = await matchDAO.createMatch(
+            ride_offer_id,
+            ride_request_id,
+            initiator_user_id
+        );
 
-        // 创建匹配
-        const matchId = await matchDAO.createMatch(ride_offer_id, ride_request_id);
-        res.json({ message: "Match request created", matchId });
+        const newMatch = await matchDAO.getMatchById(matchId);
+        res.json(newMatch);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Failed to create match" });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
 // 3.2 更新匹配状态 (司机确认/拒绝)
 exports.updateMatchStatus = async (req, res) => {
     try {
+
         const matchId = req.params.id;
         const { status } = req.body; // accepted / rejected
         const userId = req.user.id;
+        console.log(status)
 
         const match = await matchDAO.getMatchById(matchId);
         // console.log("match:", match);
@@ -39,7 +42,7 @@ exports.updateMatchStatus = async (req, res) => {
         }
 
         // 如果接受匹配，需要更新座位
-        if (status === "accepted") {
+        if (status === "confirmed") {
             // 车主是 offer_user_id，乘客是 request_user_id
             const offerSeatsLeft = match.offer_seats_available - match.request_seats_available;
             if (offerSeatsLeft < 0) {
@@ -49,11 +52,12 @@ exports.updateMatchStatus = async (req, res) => {
                 });
             }
             await matchDAO.updateSeatsAvailable(match.offer_id, offerSeatsLeft);
+            console.log("执行了")
         }
 
-        console.log("matchId:", matchId);
-        console.log("req.body:", req.body);
-        console.log("match from DB:", match);
+        // console.log("matchId:", matchId);
+        // console.log("req.body:", req.body);
+        // console.log("match from DB:", match);
 
 
         // 更新匹配状态
@@ -88,6 +92,7 @@ exports.getMatchesByUser = async (req, res) => {
 exports.getMatchById = async (req, res) => {
     try {
         const id = req.params.id;
+        console.log("id is:",id)
         const match = await matchDAO.findMatchById(id);
         if (!match) {
             return res.status(404).json({ error: "Match not found" });
