@@ -7,6 +7,8 @@ import user from "../store/modules/user";
 import {getUnreadMessagesAPI} from "../apis/chat";
 import {useSelector} from "react-redux";
 import logo from '../assets/LOGO.png';
+import backgroundImage from '../assets/Background.jpg';
+
 
 export default function Home() {
     const navigate = useNavigate();
@@ -68,7 +70,17 @@ export default function Home() {
     };
 
     return (
-        <div className="home">
+        <div
+            className="home"
+            style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                minHeight: '100vh',
+            }}
+        >
+
             {/* 顶部导航 */}
             <header className="home-header">
                 <div className="logo">  <img
@@ -89,9 +101,11 @@ export default function Home() {
             </header>
 
             {/* 子页面渲染区域 */}
-            <main className="home-content">
-                <Outlet />
-            </main>
+            <div className="home" style={{ backgroundImage: `url(${backgroundImage})`, minHeight: '100vh' }}>
+                <main className="home-content">
+                    <Outlet />
+                </main>
+            </div>
         </div>
     );
 }
