@@ -15,9 +15,12 @@ exports.getAllUsers = async (req, res) => {
 exports.banUser = async (req, res) => {
     try {
         const { id } = req.params;
+        //console.log(id) //ok
+        console.log("typeof id:", typeof id); // 应该是 number
 
         // 检查是否存在用户
-        const user = await adminDAO.getUserById(id);
+        const user = await adminDAO.getUserById(Number(id));
+        console.log("user is: ",user)
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }

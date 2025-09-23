@@ -12,7 +12,7 @@ exports.getAllUsers = async () => {
 
 // 获取单个用户
 exports.getUserById = async (id) => {
-    const [rows] = await db.query(
+    const rows = await db.query(
         `SELECT id, username, email, role, status
          FROM user
          WHERE id = ?`,
