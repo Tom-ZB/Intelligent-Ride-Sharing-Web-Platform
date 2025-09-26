@@ -1,22 +1,19 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import "./home.scss";
-import {removeToken} from "../utils";
-import {useEffect, useState} from "react";
-import {getSocket, initSocket} from "../utils/socket";
-import user from "../store/modules/user";
-import {getUnreadMessagesAPI} from "../apis/chat";
-import {useSelector} from "react-redux";
-import logo from '../assets/LOGO.png';
-import backgroundImage from '../assets/Background.jpg';
-
+import { removeToken } from "../utils";
+import { useEffect, useState } from "react";
+import { getSocket, initSocket } from "../utils/socket";
+import { getUnreadMessagesAPI } from "../apis/chat";
+import { useSelector } from "react-redux";
+import logo from "../assets/LOGO.png";
+import backgroundImage from "../assets/Background.jpg";
+import MapPage from "../pages/map"; // ✅ 引入地图页面
 
 export default function Home() {
     const navigate = useNavigate();
-    const [unreadCount, setUnreadCount] = useState(0); // 存储未读消息数量
-    const userId = useSelector(state => {
-
-        return state.user.userInfo.id
-    } );
+    const location = useLocation();
+    const [unreadCount, setUnreadCount] = useState(0);
+    const userId = useSelector((state) => state.user.userInfo.id);
 
     const handleNavClick = (path) => {
         navigate(path);
@@ -24,30 +21,29 @@ export default function Home() {
 
     useEffect(() => {
         const setup = async () => {
-            // 1️ 初始化 socket
-            initSocket(user.id);
+            // 初始化 socket
+            initSocket(userId);
 
             let socket;
             try {
-                socket = getSocket(); // 获取全局初始化的 socket
+                socket = getSocket();
             } catch (err) {
                 console.warn("⚠️ Socket not ready yet:", err.message);
                 return;
             }
 
-            // 2️拉取未读消息数量
+            // 拉取未读消息数量
             try {
                 const res = await getUnreadMessagesAPI();
-                // 只统计别人发给你的未读消息
-                const unreadMessages = res.filter(msg => msg.senderId !== userId);
+                const unreadMessages = res.filter((msg) => msg.senderId !== userId);
                 setUnreadCount(unreadMessages.length);
             } catch (err) {
                 console.error("Failed to fetch unread messages:", err);
             }
 
-            // 3️监听 WebSocket 新消息
+            // 监听新消息
             socket.on("receive_notification", () => {
-                setUnreadCount(prev => prev + 1); // 收到新消息数量加1
+                setUnreadCount((prev) => prev + 1);
             });
         };
 
@@ -57,36 +53,37 @@ export default function Home() {
             const socket = getSocket();
             socket?.off("receive_notification");
         };
-    }, []);
+    }, [userId]);
+
     const handleLogout = () => {
-        removeToken(); // 删除 token
-        navigate("/auth/login", { replace: true }); // 跳转到登录页
+        removeToken();
+        navigate("/auth/login", { replace: true });
     };
 
     const handleUnreadClick = () => {
-        // 点击未读消息，跳转到 ChatList 页面
-        setUnreadCount(0); // ✅ 清空未读数量
+        setUnreadCount(0);
         navigate("/chat");
     };
+
+    // ✅ 判断是否是首页或地图页
+    const isMapPage = location.pathname === "/" || location.pathname.startsWith("/map");
 
     return (
         <div
             className="home"
             style={{
-                backgroundImage: `url(${backgroundImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                minHeight: '100vh',
+                backgroundImage: isMapPage ? "none" : `url(${backgroundImage})`, // ✅ 地图页不显示背景
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                minHeight: "100vh",
             }}
         >
-
             {/* 顶部导航 */}
             <header className="home-header">
-                <div className="logo">  <img
-                    src={logo}
-                    alt="Logo"
-                /></div>
+                <div className="logo">
+                    <img src={logo} alt="Logo" />
+                </div>
                 <nav className="nav-buttons">
                     <button onClick={() => handleNavClick("/")}>Home</button>
                     <button onClick={() => handleNavClick("/rides/create")}>Post a Ride</button>
@@ -96,16 +93,14 @@ export default function Home() {
                         Message Center {unreadCount > 0 && `(${unreadCount})`}
                     </button>
                     <button onClick={() => handleNavClick("/user/profile")}>User Account</button>
-                    <button onClick={handleLogout}>Logout</button> {/* 新增 Logout 按钮 */}
+                    <button onClick={handleLogout}>Logout</button>
                 </nav>
             </header>
 
             {/* 子页面渲染区域 */}
-            <div className="home" style={{ backgroundImage: `url(${backgroundImage})`, minHeight: '100vh' }}>
-                <main className="home-content">
-                    <Outlet />
-                </main>
-            </div>
+            <main className="home-content">
+                {isMapPage ? <MapPage /> : <Outlet />}
+            </main>
         </div>
     );
 }
