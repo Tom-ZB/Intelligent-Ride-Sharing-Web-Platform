@@ -62,6 +62,10 @@ const RideDetail = () => {
                 offer_user_id: m.offer_user_id,
                 request_user_id: m.request_user_id,
                 initiator_user_id: m.initiator_user_id,   // 带上发起方
+                offer_from: m.offer_from,
+                offer_to: m.offer_to,
+                request_from: m.request_from,
+                request_to: m.request_to,
                 raw: m
             };
         });
