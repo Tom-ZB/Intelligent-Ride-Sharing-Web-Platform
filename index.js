@@ -43,7 +43,14 @@ app.use("/", matchRoutes);
 
 // 创建 HTTP + WebSocket 服务
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+//const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, {
+    cors: {
+        origin: "http://54.221.101.167", // 或域名
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+});
 
 // 初始化聊天 Socket
 chatSocket(io);
