@@ -7,7 +7,7 @@ let socket = null;
 
 export const initSocket = (userId) => {
     if (!socket) {
-        socket = io("http://54.221.101.167:3000", {
+        socket = io("ws://54.221.101.167:3000", {
             transports: ["websocket"],
         });
 

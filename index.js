@@ -55,6 +55,6 @@ chatSocket(io);
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0",() => {
     console.log(`CORS enabled Express web server is running on port ${PORT}.`);
 });
