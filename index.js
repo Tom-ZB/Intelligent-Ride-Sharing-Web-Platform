@@ -9,7 +9,7 @@ const { Server } = require('socket.io');
 const chatSocket = require('./server/websocket/chat.socket');
 
 const app = express();
-require('dotenv').config(); // 加载 .env 文件内容到 process.env
+require('dotenv').config();
 
 
 // To help with accessing this server from Postman
@@ -41,18 +41,17 @@ app.use("/", adminRoutes);
 app.use("/", chatRoutes);
 app.use("/", matchRoutes);
 
-// 创建 HTTP + WebSocket 服务
+// 创建 HTTP + WebSocket 服务/create HTTP + WebSocket service
 const server = http.createServer(app);
-//const io = new Server(server, { cors: { origin: "*" } });
 const io = new Server(server, {
     cors: {
-        origin: "http://54.221.101.167", // 或域名
+        origin: "http://localhost:3000",
         methods: ["GET", "POST"],
         credentials: true
     }
 });
 
-// 初始化聊天 Socket
+// 初始化聊天 Socket/initialize websocket
 chatSocket(io);
 
 

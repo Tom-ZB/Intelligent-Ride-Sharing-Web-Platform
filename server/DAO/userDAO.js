@@ -1,6 +1,6 @@
 const db = require('../models/db'); // MySQL 连接池
 
-// 创建用户
+// 创建用户/create user
 exports.createUser = async (username, email, hashedPassword, status, avatar, role) => {
     const result = await db.query(
         `INSERT INTO user (username, email, password, status, avatar, role) VALUES (?, ?, ?, ?, ?, ?)`,
@@ -10,18 +10,16 @@ exports.createUser = async (username, email, hashedPassword, status, avatar, rol
 };
 
 
-// 根据 email 查找用户
+// 根据 email 查找用户/ find user by email
 exports.getUserByEmail = async (email) => {
     const sql = `SELECT * FROM user WHERE email = ?`;
 
-    // 使用通用 query 方法
     const rows = await db.query(sql, [email]);
 
-    // 返回第一条匹配的用户记录
     return rows[0];
 };
 
-// 根据用户 ID 获取完整信息
+// 根据用户 ID 获取完整信息/get user info by id
 exports.getUserById = async (id) => {
     const sql = `
         SELECT id,username,email,created_time,status,avatar,role
@@ -29,15 +27,13 @@ exports.getUserById = async (id) => {
         WHERE id = ?
     `;
 
-    // 使用通用 query 方法执行 SQL
     const rows = await db.query(sql, [id]);
 
-    // 返回第一条匹配的用户记录
     return rows[0];
 };
 
 
-// 更新用户信息
+// 更新用户信息/update user info
 exports.updateUser = async (id, username, email, password, status,avatar) => {
     const updates = [];
     const values = [];
@@ -48,7 +44,6 @@ exports.updateUser = async (id, username, email, password, status,avatar) => {
     if (status) { updates.push("status = ?"); values.push(status); }
     if (avatar) { updates.push("avatar = ?"); values.push(avatar); }
 
-    // 如果没有更新字段，直接返回当前用户信息
     if (updates.length === 0) {
         const rows = await db.query(
             `SELECT id, username, email, status, created_time FROM user WHERE id = ?`,
@@ -58,11 +53,7 @@ exports.updateUser = async (id, username, email, password, status,avatar) => {
     }
 
     values.push(id);
-
-    // 更新用户信息
     await db.query(`UPDATE user SET ${updates.join(", ")} WHERE id = ?`, values);
-
-    // 查询并返回更新后的用户信息
     const rows = await db.query(
         `SELECT id, username, email, status, created_time FROM user WHERE id = ?`,
         [id]
@@ -71,7 +62,7 @@ exports.updateUser = async (id, username, email, password, status,avatar) => {
 };
 
 
-// 注销用户（软删除：改状态为 inactive）
+// 注销用户/disable user account
 exports.deactivateUser = async (id) => {
     const sql = `UPDATE user SET status = 'inactive' WHERE id = ?`;
     await db.query(sql, [id]);

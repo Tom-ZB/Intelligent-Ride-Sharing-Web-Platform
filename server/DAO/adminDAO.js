@@ -1,6 +1,6 @@
 const db = require('../models/db');
 
-// 获取所有用户
+// 获取所有用户/get all users
 exports.getAllUsers = async () => {
     const rows = await db.query(
         `SELECT id, username, email, role, status, created_time
@@ -10,18 +10,18 @@ exports.getAllUsers = async () => {
     return rows;
 };
 
-// 获取单个用户
+// 获取单个用户/get user
 exports.getUserById = async (id) => {
     const rows = await db.query(
         `SELECT id, username, email, role, status
          FROM user
          WHERE id = ?`,
-        [id]  // 使用参数化查询防止 SQL 注入
+        [id]
     );
-    return rows[0] || null; // 明确返回 null 避免 undefined
+    return rows[0] || null;
 };
 
-// 封禁用户（更新状态为 inactive）
+// 封禁用户/ban user
 exports.banUser = async (id) => {
     await db.query(
         `UPDATE user
@@ -31,7 +31,7 @@ exports.banUser = async (id) => {
     );
 };
 
-// 解封用户（更新状态为 active）
+// 解封用户/unban user
 exports.unbanUser = async (id) => {
     await db.query(
         `UPDATE user 

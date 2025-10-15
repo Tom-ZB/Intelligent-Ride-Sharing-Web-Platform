@@ -1,6 +1,6 @@
 const adminDAO = require('../DAO/adminDAO');
 
-// 6.1 获取所有用户
+// 6.1 获取所有用户/get all users
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await adminDAO.getAllUsers();
@@ -11,21 +11,17 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-// 6.2 封禁用户（将 status 改为 inactive）
+// 6.2 封禁用户（将 status 改为 inactive）/ban user
 exports.banUser = async (req, res) => {
     try {
         const { id } = req.params;
-        //console.log(id) //ok
-        console.log("typeof id:", typeof id); // 应该是 number
-
-        // 检查是否存在用户
+        // 检查是否存在用户/check if the user is existing?
         const user = await adminDAO.getUserById(Number(id));
         console.log("user is: ",user)
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
 
-        // 如果用户已经是 inactive
         if (user.status === 'inactive') {
             return res.status(400).json({ error: "User is already banned" });
         }
@@ -38,23 +34,21 @@ exports.banUser = async (req, res) => {
     }
 };
 
-// 6.3 解封用户（将 status 改为 active）
+// 6.3 解封用户（将 status 改为 active）/unban user change status to active
 exports.unbanUser = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // 检查用户是否存在
+        // 检查用户是否存在/check if the user is existing?
         const user = await adminDAO.getUserById(id);
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
 
-        // 如果用户已经是 active
         if (user.status === 'active') {
             return res.status(400).json({ error: "User is already active" });
         }
 
-        // 更新用户状态为 active
         await adminDAO.unbanUser(id);
         res.json({ message: `User ID ${id} has been unbanned (status set to active)` });
     } catch (err) {

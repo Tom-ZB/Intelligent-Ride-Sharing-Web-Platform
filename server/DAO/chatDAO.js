@@ -1,16 +1,16 @@
 const db = require('../models/db');
 
-// 保存消息
+// 保存消息/save message
 exports.saveMessage = async (senderId, receiverId, message) => {
     await db.query(
         `INSERT INTO chat_messages (sender_id, receiver_id, message, time_stamp, isRead)
          VALUES (?, ?, ?, NOW(), false)`,
         [senderId, receiverId, message]
     );
-    return new Date(); // 返回当前时间戳
+    return new Date();
 };
 
-// 获取聊天历史记录（双方消息）
+// 获取聊天历史记录（双方消息）/get chat history
 exports.getAllChats = async (userId) => {
     return await db.query(
         `SELECT
@@ -27,7 +27,7 @@ exports.getAllChats = async (userId) => {
     );
 };
 
-// 获取某用户的未读消息
+// 获取某用户的未读消息/get unread message
 exports.getUnreadMessages = async (userId) => {
     return await db.query(
         `SELECT
@@ -42,12 +42,12 @@ exports.getUnreadMessages = async (userId) => {
     );
 };
 
-// 标记消息为已读
+// 标记消息为已读/mark as read
 exports.markMessageAsRead = async (userId, otherUserId) => {
     return await db.query(
         `UPDATE chat_messages
          SET isRead = true
          WHERE sender_id = ? AND receiver_id = ? AND isRead = false`,
-        [otherUserId, userId] // 对方发给我 的消息，设为已读
+        [otherUserId, userId]
     );
 };

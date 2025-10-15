@@ -1,6 +1,6 @@
 const db = require('../models/db');
 
-// 创建行程
+// 创建行程/create trip
 exports.createRide = async (userId, type, location, destination, departure_time,availableSeats, status = 'active') => {
     const sql = `
         INSERT INTO ride_info (user_id, type, from_location, to_location, departure_time, seats_available, status, created_time)
@@ -12,7 +12,7 @@ exports.createRide = async (userId, type, location, destination, departure_time,
     return result.insertId;
 };
 
-// 获取所有行程（可选查询）
+// 获取所有行程（可选查询）/get all trips
 exports.getAllRides = async (search, status) => {
     let sql = `
         SELECT r.id, r.type, r.from_location AS fromLocation, r.to_location AS toLocation,
@@ -49,14 +49,14 @@ exports.getAllRides = async (search, status) => {
 };
 
 
-// 获取单个行程
+// 获取单个行程/get trip by ID
 exports.getRideById = async (id) => {
     const sql = `SELECT * FROM ride_info WHERE id = ?`;
     const rows = await db.query(sql, [id]);
     return rows[0];
 };
 
-// 更新行程
+// 更新行程/update trip
 exports.updateRide = async (id,type,location, destination, availableSeats, departureTime, status) => {
     const sql = `
         UPDATE ride_info
@@ -68,7 +68,7 @@ exports.updateRide = async (id,type,location, destination, availableSeats, depar
     ]);
 };
 
-// 删除行程
+// 删除行程/delete trip
 exports.deleteRide = async (id) => {
     const sql = `DELETE FROM ride_info WHERE id=?`;
     await db.query(sql, [id]);

@@ -1,10 +1,10 @@
 const matchDAO = require('../DAO/matchDAO');
 
-// 3.1 发起匹配请求
+// 3.1 发起匹配请求/request to match
 exports.createMatch = async (req, res) => {
     try {
         const { ride_offer_id, ride_request_id } = req.body;
-        const initiator_user_id = req.user.id; // 从 token 里拿当前登录用户
+        const initiator_user_id = req.user.id;
 
         const matchId = await matchDAO.createMatch(
             ride_offer_id,
@@ -20,7 +20,7 @@ exports.createMatch = async (req, res) => {
     }
 };
 
-// 3.2 更新匹配状态 (司机确认/拒绝)
+// 3.2 更新匹配状态 /update match status
 exports.updateMatchStatus = async (req, res) => {
     try {
 
@@ -30,20 +30,14 @@ exports.updateMatchStatus = async (req, res) => {
         console.log(status)
 
         const match = await matchDAO.getMatchById(matchId);
-        // console.log("match:", match);
-        // console.log("offerSeatsLeft:", match.offer_seats_available - match.request_seats_available);
-
-
         if (!match) return res.status(404).json({ message: "Match not found" });
-
-        // 权限校验：只有车主或乘客才能操作
+        // 权限校验：只有车主或乘客才能操作/Permission check: only the driver or passenger can perform this action
         if (![match.offer_user_id, match.request_user_id].includes(userId)) {
             return res.status(403).json({ message: "No permission" });
         }
 
-        // 如果接受匹配，需要更新座位
+        // 如果接受匹配，需要更新座位/If the match is accepted, the seats need to be updated
         if (status === "confirmed") {
-            // 车主是 offer_user_id，乘客是 request_user_id
             const offerSeatsLeft = match.offer_seats_available - match.request_seats_available;
             if (offerSeatsLeft < 0) {
                 return res.status(200).json({
@@ -52,18 +46,10 @@ exports.updateMatchStatus = async (req, res) => {
                 });
             }
             await matchDAO.updateSeatsAvailable(match.offer_id, offerSeatsLeft);
-            console.log("执行了")
         }
 
-        // console.log("matchId:", matchId);
-        // console.log("req.body:", req.body);
-        // console.log("match from DB:", match);
-
-
-        // 更新匹配状态
+        // 更新匹配状态/update status
         await matchDAO.updateMatchStatus(matchId, status);
-
-        // 返回更新后的匹配信息
         const updatedMatch = await matchDAO.getMatchById(matchId);
         res.json(updatedMatch);
 
@@ -73,10 +59,10 @@ exports.updateMatchStatus = async (req, res) => {
     }
 };
 
-// 获取某个用户的所有匹配
+// 获取某个用户的所有匹配/get match by user
 exports.getMatchesByUser = async (req, res) => {
     try {
-        const userId = req.query.userId; // 前端传 ?userId=xxx
+        const userId = req.query.userId;
         if (!userId) {
             return res.status(400).json({ error: "userId is required" });
         }
@@ -88,7 +74,7 @@ exports.getMatchesByUser = async (req, res) => {
     }
 };
 
-// 获取单个匹配详情
+// 获取单个匹配详情/get match by id
 exports.getMatchById = async (req, res) => {
     try {
         const id = req.params.id;
@@ -104,7 +90,7 @@ exports.getMatchById = async (req, res) => {
     }
 };
 
-// 获取全部匹配数据
+// 获取全部匹配数据/get all match
 exports.getAllMatches = async (req, res) => {
     try {
         const matches = await matchDAO.findAllMatches();

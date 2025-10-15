@@ -2,22 +2,21 @@ const userDAO = require('../DAO/userDAO');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// 注册用户  需要使用form-data传参 因为需要传入图片/文件  需要使用Multer进行解析
+// 注册用户/register user
 exports.register = async (req, res) => {
     try {
         const { username, email, password, status } = req.body;
         const avatar = req.file ? `/image/${req.file.filename}` : null;
 
-        // 1. 检查邮箱是否已经存在
+        // 1. 检查邮箱是否已经存在/check if the email is existing?
         const existingUser = await userDAO.getUserByEmail(email);
         if (existingUser) {
             return res.status(400).json({ error: "Email already registered" });
         }
 
-        // 2. 加密密码
+        // 2. 加密密码/encrypt pw
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // 3. 插入新用户
         const role = 'user';
         const userId = await userDAO.createUser(
             username,
@@ -37,14 +36,14 @@ exports.register = async (req, res) => {
 
 
 
-// 登录用户  需要使用row的JSON格式传入参数
+// 登录用户/login
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await userDAO.getUserByEmail(email);
         if (!user) return res.status(401).json({ error: "Invalid email or password" });
 
-        const match = await bcrypt.compare(password, user.password);  //用来验证输入的密码和哈希是否匹配
+        const match = await bcrypt.compare(password, user.password);
         if (!match) return res.status(401).json({ error: "Invalid email or password" });
 
         const token = jwt.sign({ id: user.id, email: user.email ,role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -64,27 +63,25 @@ exports.login = async (req, res) => {
     }
 };
 
-// 获取用户信息
+// 获取用户信息/get user info
 exports.getUserInfo = async (req, res) => {
     try {
-        const userId = req.user.id;  //从token解析出用户的ID
+        const userId = req.user.id;
 
         const user = await userDAO.getUserById(userId);
         console.log(user)
 
         if (!user) {
-            return res.status(404).json({ message: "用户不存在" });
+            return res.status(404).json({ message: "user not existing" });
         }
-
-        // 返回完整用户信息
         res.json(user);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "获取用户信息失败" });
+        res.status(500).json({ message: "failed to get user info" });
     }
 };
 
-// 修改用户信息
+// 修改用户信息/edit user info
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -92,7 +89,7 @@ exports.updateUser = async (req, res) => {
         const avatar = req.file ? `/image/${req.file.filename}` : null;
 
 
-        // 权限检查：只能本人或管理员修改
+        // 权限检查：只能本人或管理员修改/permission check
         if (req.user.id !== parseInt(id)) {
             return res.status(403).json({ error: "Unauthorized to update this user" });
         }
@@ -109,13 +106,13 @@ exports.updateUser = async (req, res) => {
 };
 
 
-// 注销用户（软删除：改状态为 inactive）
+// 注销用户/disable account
 exports.deactivateUser = async (req, res) => {
     try {
         const { id } = req.params;
         console.log(id)
 
-        // 权限检查：只能本人或管理员注销
+        // 权限检查：只能本人或管理员注销/permission check
         if (req.user.id !== parseInt(id)) {
             return res.status(403).json({ error: "Unauthorized to deactivate this user" });
         }
