@@ -1,4 +1,4 @@
-// 路由配置
+// 路由配置/router config
 import { createBrowserRouter } from "react-router-dom";
 import { AuthRoute } from "../components/AuthRoute";
 import { AdminRoute } from "../components/AdminRoute";
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
             </AuthRoute>
         ),
         children: [
-            // 首页默认渲染 map + AI 页面
+            // 首页默认渲染 map/The homepage by default renders the map
             {
                 index: true,
                 element: (
@@ -57,7 +57,7 @@ const router = createBrowserRouter([
                     </>
                 ),
             },
-            // 其它导航跳转页面作为 Home 的子路由
+            // 其它导航跳转页面作为 Home 的子路由/Other navigation pages as sub-routes of Home
             {
                 path: "rides",
                 element: <RideList />,

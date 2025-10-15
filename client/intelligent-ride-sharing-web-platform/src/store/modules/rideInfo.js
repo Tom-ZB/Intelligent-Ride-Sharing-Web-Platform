@@ -8,10 +8,10 @@ const rideInfoStore = createSlice({
     name: "rideInfo",
     // 数据状态
     initialState: {
-        rides: [],          // 所有行程列表
-        currentRide: null,  // 当前选中的行程
+        rides: [],          // 所有行程列表/All trips list
+        currentRide: null,  // 当前选中的行程/Currently selected trip
     },
-    // 同步修改方法
+
     reducers: {
         setRides(state, action) {
             state.rides = action.payload;
@@ -24,8 +24,9 @@ const rideInfoStore = createSlice({
         },
         updateRide(state, action) {
             const updated = action.payload;
+            //遍历所有的ride 如果true就将updated赋值给 如果false就保持不变/Iterate over all rides: if true, assign updated; if false, keep unchanged
             state.rides = state.rides.map(ride =>
-                ride.id === updated.id ? updated : ride  //遍历所有的ride 如果true就将updated赋值给 如果false就保持不变
+                ride.id === updated.id ? updated : ride
             );
         },
         removeRide(state, action) {
@@ -34,17 +35,17 @@ const rideInfoStore = createSlice({
     }
 });
 
-// 解构出 actionCreator
+// 解构出 actionCreator/Destructure the actionCreator
 export const { setRides, setCurrentRide, addRide, updateRide, removeRide } = rideInfoStore.actions;
 
-// reducer 函数
+
 const rideInfoReducer = rideInfoStore.reducer;
 
 //
-// ============== 异步方法 ==============
+// ============== 异步方法/Asynchronous method ==============
 //
 
-// 获取所有行程
+// 获取所有行程/Fetch all trips
 const fetchRides = () => {
     return async (dispatch) => {
         const res = await getRidesAPI();
@@ -53,7 +54,7 @@ const fetchRides = () => {
     };
 };
 
-// 根据 ID 获取某个行程
+// 根据 ID 获取某个行程/Fetch a trip by ID
 const fetchRideById = (id) => {
     return async (dispatch) => {
         const res = await getRideByIdAPI(id);
@@ -61,7 +62,7 @@ const fetchRideById = (id) => {
     };
 };
 
-// 创建行程
+// 创建行程/create trip
 const createRide = (formData) => {
     return async (dispatch) => {
         const res = await createRideAPI(formData);
@@ -69,7 +70,7 @@ const createRide = (formData) => {
     };
 };
 
-// 更新行程
+// 更新行程/update trip
 const editRide = (id, formData) => {
     return async (dispatch) => {
         const res = await updateRideAPI(id, formData);
@@ -77,7 +78,7 @@ const editRide = (id, formData) => {
     };
 };
 
-// 删除行程
+// 删除行程/delete trip
 const deleteRide = (id) => {
     return async (dispatch) => {
         await deleteRideAPI(id);

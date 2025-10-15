@@ -31,7 +31,7 @@ const Register = () => {
         setLoading(true);
 
         try {
-            // 构建 FormData
+            // 构建 FormData/create FormData
             const formDataToSend = new FormData();
             formDataToSend.append("username", formData.username);
             formDataToSend.append("email", formData.email);

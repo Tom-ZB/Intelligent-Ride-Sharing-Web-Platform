@@ -31,7 +31,7 @@ const RideCreate = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-    // 处理输入框
+    // 处理输入框/handle input
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm({
@@ -40,7 +40,7 @@ const RideCreate = () => {
         });
     };
 
-    // 提交表单
+    // 提交表单/submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -48,11 +48,9 @@ const RideCreate = () => {
 
         try {
             const res = await createRideAPI(form);
-            // console.log(form)
-            // console.log("到这了")
-            dispatch(addRide(res)); // 更新 Redux 添加创建的新行程
-            setMessage("✅ Ride created successfully!");
-            navigate("/rides"); // 跳转到行程列表
+            dispatch(addRide(res)); // 更新 Redux 添加创建的新行程/"Update Redux to add the newly created trip
+            setMessage("Ride created successfully!");
+            navigate("/rides");
         } catch (err) {
             console.error("Create ride error:", err);
             setMessage("❌ Failed to create ride");

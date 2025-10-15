@@ -30,7 +30,7 @@ const RideDetail = () => {
     };
 
 
-    // 加载用户行程和匹配
+    // 加载用户行程和匹配/Load user trips and matches
     useEffect(() => {
         if (user.id) {
             dispatch(fetchRides());
@@ -61,7 +61,7 @@ const RideDetail = () => {
                 type: "matched",
                 offer_user_id: m.offer_user_id,
                 request_user_id: m.request_user_id,
-                initiator_user_id: m.initiator_user_id,   // 带上发起方
+                initiator_user_id: m.initiator_user_id,
                 offer_from: m.offer_from,
                 offer_to: m.offer_to,
                 request_from: m.request_from,
@@ -74,7 +74,7 @@ const RideDetail = () => {
         setMyRides([...created, ...matched]);
     }, [rides, matches, user.id]);
 
-    // 行程操作
+
     const handleEdit = (id) => navigate(`/rides/edit/${id}`);
 
     const handleDeleteRide = async (id) => {
@@ -98,7 +98,7 @@ const RideDetail = () => {
         }
 
         message.success("Match accepted");
-        dispatch(fetchRides()); //重新拉取 rides，刷新座位数
+        dispatch(fetchRides()); //重新拉取 rides，刷新座位数/fetch rides and refresh seat count
     } catch (err) {
         console.error(err);
         message.error("Accept failed");
@@ -148,12 +148,12 @@ const RideDetail = () => {
                     const isInitiator = record.initiator_user_id === user.id;
 
                     if (isInitiator) {
-                        // 我是发起方 → 只能看到状态
+                        // 我是发起方 → 只能看到状态/the initiator → can only see the status
                         return <span>{record.status}</span>;
                     }
 
                     if (!isInitiator && record.status === "pending") {
-                        // 我是接收方 → 可以操作
+                        // 我是接收方 → 可以操作/Receiver → can operate
                         return (
                             <>
                                 <Button type="primary" size="small" onClick={() => handleAccept(record)}>

@@ -14,7 +14,7 @@ const containerStyle = {
 
 const center = { lat: -40.9006, lng: 174.886 };
 
-// 🔹 自动补全输入框组件
+// 自动补全输入框组件/Autocomplete input component
 function LocationInput({ label, value, onChange }) {
     const [suggestions, setSuggestions] = useState([]);
 
@@ -27,10 +27,10 @@ function LocationInput({ label, value, onChange }) {
             return;
         }
 
-        // 使用 Google Places AutocompleteService
+        // Google Places AutocompleteService
         const service = new window.google.maps.places.AutocompleteService();
         service.getPlacePredictions(
-            { input, types: ["(cities)"] }, // 只提示城市
+            { input, types: ["(cities)"] }, // 只提示城市/Only suggest cities
             (predictions, status) => {
                 if (status === window.google.maps.places.PlacesServiceStatus.OK) {
                     setSuggestions(predictions);
@@ -93,7 +93,7 @@ function MapPage() {
     const [displayedEvents, setDisplayedEvents] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
 
-    // ✅ 保留 NZTA API 请求
+    // NZTA API request
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -116,7 +116,7 @@ function MapPage() {
         fetchEvents();
     }, []);
 
-    // 🔍 使用 Google Geocoding API 将地名转经纬度
+    // 使用 Google Geocoding API 将地名转经纬度/Use the Google Geocoding API to convert place names into latitude and longitude
     const geocode = async (placeName) => {
         const resp = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -132,7 +132,7 @@ function MapPage() {
         return null;
     };
 
-    // 🚗 提交表单 -> 规划路线
+    // 提交表单 -> 规划路线  /Submit form -> Plan route
     const handleSubmit = async (e) => {
         e.preventDefault();
         const fromCoords = await geocode(fromName);
@@ -170,7 +170,7 @@ function MapPage() {
 
     return (
         <div className="map-page" style={{ display: "flex", height: "100vh" }}>
-            {/* 左侧控制面板 */}
+            {/* 左侧控制面板/Left-side control panel */}
             <div className="control-panel" style={{ width: "30%", padding: "10px", overflowY: "auto" }}>
                 <h3>Route planning</h3>
                 <form onSubmit={handleSubmit}>
@@ -203,7 +203,7 @@ function MapPage() {
                 ))}
             </div>
 
-            {/* 右侧地图 */}
+            {/* 右侧地图/Right-side map */}
             <div className="map-container" style={{ flex: 1 }}>
                 <LoadScript
                     googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}

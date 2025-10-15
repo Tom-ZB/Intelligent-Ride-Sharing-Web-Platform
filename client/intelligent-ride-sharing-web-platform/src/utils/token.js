@@ -1,10 +1,9 @@
-//封装token相关的方法，存，取，删除
-
+//封装token相关的方法，存，取，删除/Encapsulate token-related methods: store, retrieve, and delete.
 const TOKEN_KEY = "token";
 const EXPIRE_KEY = "token_expire";
 
-export function setToken(token, expiresInSeconds = 6000) { //6000秒过期
-    const expireAt = Date.now() + expiresInSeconds * 1000; // 过期时间戳
+export function setToken(token, expiresInSeconds = 6000) { //6000秒过期/Expires in 6000 seconds
+    const expireAt = Date.now() + expiresInSeconds * 1000; // 过期时间戳/Expiration timestamp
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(EXPIRE_KEY, expireAt);
 }
@@ -16,7 +15,7 @@ export function getToken() {
     if (!token || !expireAt) return null;
 
     if (Date.now() > parseInt(expireAt)) {
-        removeToken(); // token 已过期
+        removeToken(); // token 已过期/Token has expired
         return null;
     }
 

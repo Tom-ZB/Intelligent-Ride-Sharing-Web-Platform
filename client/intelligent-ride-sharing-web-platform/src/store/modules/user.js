@@ -8,16 +8,15 @@ import {getProfileAPI, loginAPI} from "../../apis/user";
 
 const userStore = createSlice({
     name: "user",
-    //数据状态
     initialState: {
         token: getToken() ||'',
         userInfo: JSON.parse(localStorage.getItem("userInfo")) || {}
     },
-    //同步修改方法
+
     reducers: {
         setToken(state,action) {
             state.token = action.payload
-            //localstorage也存一份
+            //localstorage也存一份/Also store a copy in localStorage
             _setToken(action.payload)
         },
         setUserInfo(state,action) {
@@ -32,31 +31,29 @@ const userStore = createSlice({
     }
 })
 
-//解构出actionCreator
+//解构出actionCreator/Destructure the actionCreator
 export const { setToken,setUserInfo,clearUserInfo} = userStore.actions
 
-//获取reducer函数
+//获取reducer函数/Get reducer function
 const userReducer = userStore.reducer
 
-//异步方法 完成登录获取token
+//异步方法/Asynchronous method
+
+//完成登录获取token/complete login and obtain token
 const fetchLogin = (loginForm) => {
     return async (dispatch) => {
-        //1发送异步请求
         const res = await loginAPI(loginForm)
-        //console.log("fetchUserInfo res.data:", res.data);
-
-        //2提交同步action进行token存入
+        //提交同步action进行token存入/Dispatch a synchronous action to store the token
         dispatch(setToken(res.token));
         dispatch(setUserInfo(res.user));
     }
 }
 
-//异步方法 获取个人用户信息
+//获取个人用户信息/Fetch personal user information
 const fetchUserInfo = () => {
     return async (dispatch) => {
-        //1发送异步请求
         const res = await getProfileAPI();
-        //2提交同步action进行token存入
+        //2提交同步action/Dispatch a synchronous action
         dispatch(setUserInfo(res))
     }
 }

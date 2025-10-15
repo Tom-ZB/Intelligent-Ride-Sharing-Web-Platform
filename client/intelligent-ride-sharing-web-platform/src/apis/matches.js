@@ -1,7 +1,7 @@
 // apis/matches.js
 import { request } from "../utils";
 
-// 获取用户的匹配行程列表
+// 获取用户的匹配行程列表/Fetch the user's matched trip list
 export function getMatchesByUserAPI(userId) {
     return request({
         url: `/matches?userId=${userId}`,
@@ -9,7 +9,7 @@ export function getMatchesByUserAPI(userId) {
     });
 }
 
-// 获取单个匹配详情
+// 获取单个匹配详情/Fetch single match detail
 export function getMatchByIdAPI(id) {
     return request({
         url: `/matches/${id}`,
@@ -17,7 +17,7 @@ export function getMatchByIdAPI(id) {
     });
 }
 
-// 创建匹配请求
+// 创建匹配请求/Create match request
 export function createMatchAPI(formData) {
     return request({
         url: "/matches",
@@ -26,7 +26,7 @@ export function createMatchAPI(formData) {
     });
 }
 
-// 更新匹配状态
+// 更新匹配状态/Update match status
 export function updateMatchStatusAPI(id, status) {
     return request({
         url: `/matches/${id}/status`,
@@ -35,7 +35,7 @@ export function updateMatchStatusAPI(id, status) {
     });
 }
 
-// 删除匹配（如果需要）
+// 删除匹配/Delete match
 export function deleteMatchAPI(id) {
     return request({
         url: `/matches/${id}`,
@@ -43,7 +43,7 @@ export function deleteMatchAPI(id) {
     });
 }
 
-// 获取全部匹配数据
+// 获取全部匹配数据/Fetch all match data
 export function getAllMatchesAPI() {
     return request({
         url: "/matches/all",

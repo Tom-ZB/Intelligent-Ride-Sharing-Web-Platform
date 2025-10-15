@@ -11,36 +11,36 @@ const AdminDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    // 获取全局数据
+    // 获取全局数据/Fetch global data
     const users = useSelector((state) => state.userList.users);
-    const rides = useSelector((state) => state.rideInfo.rides); // 假设 rideInfo 已有全局状态
-    const matches = useSelector((state) => state.matches.matches);   // 假设 matches 已有全局状态
+    const rides = useSelector((state) => state.rideInfo.rides);
+    const matches = useSelector((state) => state.matches.matches);
 
     useEffect(() => {
-        dispatch(fetchUserList()); // 加载用户列表
-        dispatch(fetchRides());     // 加载行程信息
-        dispatch(fetchAllMatches());      // 加载匹配信息
+        dispatch(fetchUserList()); // 加载用户列表/Load user list
+        dispatch(fetchRides());     // 加载行程信息/Load trip information
+        dispatch(fetchAllMatches());      // 加载匹配信息/Load matching information
     }, [dispatch]);
 
-    // 用户数量统计
+    // 用户数量统计/User count statistics
     const totalUsers = users.length;
     const bannedUsers = users.filter((u) => u.status === "inactive").length;
 
-    // 行程统计
+    // 行程统计/Trip statistics
     const totalRides = rides.length;
     const activeRides = rides.filter((r) => r.status === "active").length;
     const completedRides = rides.filter((r) => r.status === "completed").length;
     const cancelledRides = rides.filter((r) => r.status === "cancelled").length;
 
-    // 匹配统计
+    // 匹配统计/match statistics
     const totalMatches = matches.length;
     const confirmedMatches = matches.filter((m) => m.status === "confirmed").length;
     const pendingMatches = matches.filter((m) => m.status === "pending").length;
     const successRate = totalMatches ? ((confirmedMatches / totalMatches) * 100).toFixed(2) : 0;
 
     const handleLogout = () => {
-        removeToken(); // 删除 token
-        navigate("/auth/login", { replace: true }); // 跳转到登录页
+        removeToken(); //delete token
+        navigate("/auth/login", { replace: true });
     };
 
     return (
@@ -49,7 +49,7 @@ const AdminDashboard = () => {
 
             <button className="logout-button" onClick={handleLogout}>Logout</button>
 
-            {/* 用户统计模块 */}
+            {/* 用户统计模块/User Statistics Module */}
             <section style={{ marginBottom: "20px" }}>
                 <h2>User</h2>
                 <p>total user count: {totalUsers}</p>
@@ -57,7 +57,7 @@ const AdminDashboard = () => {
                 <button onClick={() => navigate("/admin/users")}>check user list</button>
             </section>
 
-            {/* 行程统计模块 */}
+            {/* 行程统计模块/Trip Statistics Module */}
             <section style={{ marginBottom: "20px" }}>
                 <h2>ride count</h2>
                 <p>total ride count: {totalRides}</p>
@@ -66,7 +66,7 @@ const AdminDashboard = () => {
                 <p>cancelled count: {cancelledRides}</p>
             </section>
 
-            {/* 匹配统计模块 */}
+            {/* 匹配统计模块/Matching Statistics Module */}
             <section>
                 <h2>match count</h2>
                 <p>total matched count: {totalMatches}</p>

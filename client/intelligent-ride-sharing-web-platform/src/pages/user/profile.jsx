@@ -10,7 +10,7 @@ const Profile = () => {
     const userInfo = useSelector((state) => state.user.userInfo);
     const navigate = useNavigate();
 
-    // 组件挂载时执行一次，拉取用户信息
+    // 组件挂载时执行一次，拉取用户信息/Execute once on component mount to fetch user information
     useEffect(() => {
         console.log("Profile mounted, dispatching fetchUserInfo");
         dispatch(fetchUserInfo());
@@ -18,7 +18,7 @@ const Profile = () => {
     }, [dispatch]);
 
 
-    // 如果还没有获取到用户信息，显示加载中
+    // 如果还没有获取到用户信息，显示加载中/If user information has not been retrieved yet, show loading
     if (!userInfo || Object.keys(userInfo).length === 0) {
         return <div className="profile-container">loading...</div>;
     }
@@ -26,8 +26,8 @@ const Profile = () => {
     const formatDate = (isoString) => {
         const date = new Date(isoString);
         const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从 0 开始
-        const year = String(date.getFullYear()).slice(-2); // 取年份后两位
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(-2);
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
 

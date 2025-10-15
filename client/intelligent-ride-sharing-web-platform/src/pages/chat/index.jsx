@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getChatHistoryAPI, markMessageAsReadAPI } from "../../apis/chat";
 import { setMessages} from "../../store/modules/chat";
-import {useNavigate} from "react-router-dom"; // 假设存了当前登录用户信息
+import {useNavigate} from "react-router-dom";
 import "./index.scss";
 
 const ChatList = () => {
@@ -38,7 +38,7 @@ const ChatList = () => {
         fetchChatHistory();
     }, [userId,dispatch]);
 
-    // 只保留每个其他用户的最后一条消息
+    // 只保留每个其他用户的最后一条消息/Keep only the last message from each other user
     const lastMessagesByUser = {};
     messages.forEach(msg => {
         const otherId = msg.senderId === userId ? msg.receiverId : msg.senderId;
@@ -47,7 +47,7 @@ const ChatList = () => {
 
     const handleMarkAsReadAndNavigate = async (otherUserId) => {
         try {
-            // 先标记已读
+            // 先标记已读/Mark as read
             await markMessageAsReadAPI(otherUserId);
 
             const updatedMessages = messages.map(msg =>
@@ -55,8 +55,6 @@ const ChatList = () => {
             );
             dispatch(setMessages(updatedMessages));
             setUnreadCounts(prev => ({ ...prev, [otherUserId]: 0 }));
-
-            // 跳转到聊天页面
             navigate(`/chat/${otherUserId}`);
         } catch (err) {
             console.error("Failed to mark messages as read:", err);

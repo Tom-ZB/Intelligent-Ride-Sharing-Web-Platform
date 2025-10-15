@@ -12,12 +12,12 @@ export function loginAPI(formData) {
 }
 
 
-// 注册用户
+// 注册用户/register user
 export function registerAPI(formData) {
     return request({
         url: '/auth/register',
         method: 'POST',
-        data: formData, // 注意这里是 FormData，因为包含文件
+        data: formData,
         headers: {
             'Content-Type': 'multipart/form-data'
         }
@@ -25,7 +25,7 @@ export function registerAPI(formData) {
 }
 
 
-//获取用户账户信息
+//获取用户账户信息/get user account info
 // api/user.js
 export function getProfileAPI() {
     return request({
@@ -35,19 +35,19 @@ export function getProfileAPI() {
 }
 
 
-// 更新用户信息
+// 更新用户信息/update account info
 export function updateUserAPI(userId, formData) {
     return request({
         url: `/users/${userId}`,
         method: "PUT",
-        data: formData, // 支持 FormData
+        data: formData,
         headers: {
             "Content-Type": "multipart/form-data",
         },
     });
 }
 
-// 注销用户
+// 注销用户/disable account
 export function deactivateUserAPI(userId) {
     return request({
         url: `/users/${userId}/deactivate`,

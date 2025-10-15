@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUserList, deactivateUser, activateUser } from "../../store/modules/userList";
 import { useNavigate } from "react-router-dom";
-import "./userList.scss"; // 使用全局样式
+import "./userList.scss";
 
 const AdminUsers = () => {
     const dispatch = useDispatch();

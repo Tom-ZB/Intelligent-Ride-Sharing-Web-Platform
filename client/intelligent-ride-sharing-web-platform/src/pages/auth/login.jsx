@@ -26,17 +26,17 @@ const Login = () => {
         setLoading(true);
 
         try {
-            // dispatch(fetchLogin) 会把 token 和 userInfo 存到 redux
+            // dispatch(fetchLogin) 会把 token 和 userInfo 存到 redux/"dispatch(fetchLogin) will store the token and userInfo in Redux
             await dispatch(fetchLogin(loginForm));
 
-            // 从 redux 里拿 role
+            // 从 redux 里拿 role/Get role from Redux
             const role = userInfo.role
             console.log(role)
 
             if (role === "admin") {
-                navigate("/admin/dashboard"); // 管理员跳后台
+                navigate("/admin/dashboard");
             } else {
-                navigate("/"); // 普通用户跳首页
+                navigate("/");
             }
 
         } catch (err) {

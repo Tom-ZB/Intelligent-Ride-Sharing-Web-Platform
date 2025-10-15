@@ -12,7 +12,7 @@ const RideEdit = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
-    const [fetching, setFetching] = useState(true); // 页面加载时的loading
+    const [fetching, setFetching] = useState(true); // 页面加载时的loading/Loading during page load
 
     useEffect(() => {
         const fetchRide = async () => {

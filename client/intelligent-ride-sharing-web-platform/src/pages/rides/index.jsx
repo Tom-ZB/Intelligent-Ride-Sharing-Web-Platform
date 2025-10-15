@@ -21,17 +21,17 @@ const RideList = () => {
     const navigate = useNavigate();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedMyRideId, setSelectedMyRideId] = useState(null); //选中的行程id
-    const [targetRide, setTargetRide] = useState(null);  //弹窗中选中的行程id
+    const [selectedMyRideId, setSelectedMyRideId] = useState(null); //选中的行程id/Selected trip ID
+    const [targetRide, setTargetRide] = useState(null);  //弹窗中选中的行程id/Selected trip ID in the popup
     const [loading, setLoading] = useState(false);
 
-    // 页面初始化加载所有行程
+    // 页面初始化加载所有行程/Load all trips on page initialization
     useEffect(() => {
         dispatch(fetchRides());
     }, [dispatch]);
 
 
-    // 搜索（向后端请求 /rides?search=xxx）
+    // 搜索（向后端请求 /rides?search=xxx）/Search (send request to backend: /rides?search=xxx)
     const handleSearch = async (value) => {
         try {
             setLoading(true);
@@ -39,7 +39,7 @@ const RideList = () => {
                 url: `/rides?search=${encodeURIComponent(value)}`,
                 method: "GET",
             });
-            // ✅ 直接替换 redux 里的数据
+            // 直接替换 redux 里的数据/Directly replace the data in Redux
             dispatch({ type: "rideInfo/setRides", payload: res });
         } catch (err) {
             console.error(err);
@@ -49,7 +49,7 @@ const RideList = () => {
         }
     };
 
-    // ✅ 状态过滤（向后端请求 /rides?status=xxx）
+    // 状态过滤（向后端请求 /rides?status=xxx）/Status filter (send request to backend: /rides?status=xxx)
     const handleStatusFilter = async (status) => {
         try {
             setLoading(true);
@@ -66,7 +66,7 @@ const RideList = () => {
         }
     };
 
-    // 打开匹配弹窗
+    // 打开匹配弹窗/Open the matching popup
     const openMatchModal = (ride) => {
         setTargetRide(ride);
         setIsModalOpen(true);
@@ -84,13 +84,13 @@ const RideList = () => {
             return;
         }
 
-        // 必须是对向类型
+        // 必须是对向类型/Must be of opposite type
         if (otherRide.type === targetRide.type) {
             message.warning("Please select a ride of the opposite type");
             return;
         }
 
-        // 构建 payload
+        // 构建 payload/Build payload
         const isTargetOffer = targetRide.type === "offer";
         const payload = {
             ride_offer_id: isTargetOffer ? targetRide.id : otherRide.id,
@@ -121,7 +121,7 @@ const RideList = () => {
 
 
 
-    // ✅ 表格列定义（只保留排序，本地完成）
+    // 表格列定义（只保留排序，本地完成）/Table column definitions (keep only sorting, handled locally)
     const columns = [
         { title: "RideID", dataIndex: "id", key: "id" },
         {
@@ -129,10 +129,10 @@ const RideList = () => {
             dataIndex: ["user", "id"],
             key: "userId",
             render: (text, record) => {
-                // 如果没有 user，就用 userId 字段兜底
+                // 如果没有 user，就用 userId 字段兜底/If there is no user, fall back to the userId field
                 const userId = record.user ? record.user.id : record.userId;
 
-                if (!userId) return <span>-</span>; // 防御性兜底
+                if (!userId) return <span>-</span>;
 
                 return userId !== currentUser.id ? (
                     <button onClick={() => navigate(`/chat/${userId}`)}>
@@ -169,14 +169,14 @@ const RideList = () => {
             ],
             onFilter: (value) => {
                 handleStatusFilter(value);
-                return true; // ✅ Antd 要求返回 true
+                return true;
             },
         },
         {
             title: "Operate",
             key: "action",
             render: (_, record) => {
-                // 只有当前用户的行程才显示 Match 按钮
+                // 只有当前用户的行程才显示 Match 按钮/Only show the Match button for the current user's trips
                 if (record.user?.id === currentUser.id) {
                     return (
                         <Button
@@ -188,7 +188,7 @@ const RideList = () => {
                         </Button>
                     );
                 }
-                return null; // 别人的行程不显示按钮
+                return null; // 别人的行程不显示按钮/Do not show the button for other users' trips
             },
         },
 
@@ -198,7 +198,7 @@ const RideList = () => {
         <div style={{ padding: "20px" }}>
             <h2>Ride List</h2>
 
-            {/* ✅ 搜索框 */}
+            {/* 搜索框/Search box */}
             <Search
                 placeholder="Search by location or destination"
                 allowClear
@@ -215,7 +215,7 @@ const RideList = () => {
                 loading={loading}
             />
 
-            {/* 匹配弹窗 */}
+            {/* 匹配弹窗/Matching popup */}
             <Modal
                 title="Select your ride for matching"
                 open={isModalOpen}
